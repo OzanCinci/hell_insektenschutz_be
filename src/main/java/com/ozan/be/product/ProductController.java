@@ -21,4 +21,11 @@ public class ProductController extends BaseController {
     Product product = productService.getProductById(id);
     return ResponseEntity.ok(product);
   }
+
+  @GetMapping("/{category}/{name}")
+  public ResponseEntity<Product> getProductByCategoryAndName(
+      @PathVariable("category") String category, @PathVariable("name") String name) {
+    Product product = productService.getProductByCategoryAndName(category, name);
+    return ResponseEntity.ok(product);
+  }
 }

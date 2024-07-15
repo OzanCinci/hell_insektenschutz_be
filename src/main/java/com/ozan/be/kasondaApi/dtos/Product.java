@@ -75,6 +75,30 @@ public class Product {
 
     @JsonProperty("Function")
     private List<String> function;
+
+    @JsonProperty("BlindWidth")
+    private String blindWidth;
+
+    @JsonProperty("WoodGrain")
+    private String woodGrain;
+
+    @JsonProperty("SlatsStandard")
+    private String SlatsStandard;
+
+    @JsonProperty("SlatsPerforated")
+    private String SlatsPerforated;
+
+    @JsonProperty("SlatsMatte")
+    private String SlatsMatte;
+
+    @JsonProperty("SlatsHighGloss")
+    private String SlatsHighGloss;
+
+    @JsonProperty("SlatsBrushed")
+    private String SlatsBrushed;
+
+    @JsonProperty("SlatsMetallic")
+    private String SlatsMetallic;
   }
 
   public static class SubCategory {

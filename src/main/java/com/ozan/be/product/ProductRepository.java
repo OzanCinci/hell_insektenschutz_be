@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
   Optional<Product> findById(UUID id);
 
+  Optional<Product> findByCategoryAndName(String category, String name);
+
   List<Product> findByIdIn(Set<UUID> ids);
 }

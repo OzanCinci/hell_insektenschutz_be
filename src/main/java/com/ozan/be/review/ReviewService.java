@@ -6,6 +6,7 @@ import com.ozan.be.product.Product;
 import com.ozan.be.product.ProductService;
 import com.ozan.be.review.dtos.ReviewRequestDTO;
 import com.ozan.be.review.dtos.ReviewResponseDTO;
+import com.ozan.be.review.dtos.ReviewSummaryDTO;
 import com.ozan.be.user.User;
 import com.ozan.be.user.UserService;
 import com.ozan.be.utils.ModelMapperUtils;
@@ -57,6 +58,29 @@ public class ReviewService {
         reviewResponseDTOList, reviewPage.getPageable(), reviewPage.getTotalElements());
   }
 
+  public Page<ReviewSummaryDTO> getAllReviewsWithoutProduct(Pageable pageable, Predicate filter) {
+    Pageable finalPageable = PageableUtils.prepareAuditSorting(pageable);
+    Page<Review> reviewPage = reviewRepository.findAll(filter, finalPageable);
+
+    List<ReviewSummaryDTO> reviewResponseDTOList =
+        reviewPage.getContent().stream()
+            .map(
+                review -> {
+                  User user = review.getUser();
+
+                  ReviewSummaryDTO responseDTO =
+                      ModelMapperUtils.map(review, ReviewSummaryDTO.class);
+                  responseDTO.setEmail(user.getEmail());
+                  responseDTO.setUserName(
+                      user.getFirstName() + " " + user.getLastName().substring(0, 1) + ".");
+                  return responseDTO;
+                })
+            .toList();
+
+    return new PageImpl<>(
+        reviewResponseDTOList, reviewPage.getPageable(), reviewPage.getTotalElements());
+  }
+
   @Transactional
   public void approveReview(UUID id) {
     Review review = getReviewByIdThrowsException(id);
@@ -88,6 +112,7 @@ public class ReviewService {
   public UUID createReview(ReviewRequestDTO requestDTO, UUID userId) {
     User user = userService.getUserById(userId);
 
+    // TODO: remove comment when go prod!
     validateNoMultipleReviewForSameProduct(userId, requestDTO.getProductId());
 
     Product product = productService.getProductByIdThrowsException(requestDTO.getProductId());

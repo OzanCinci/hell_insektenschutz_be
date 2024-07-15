@@ -33,4 +33,10 @@ public class ProductService {
     List<Product> products = productRepository.findByIdIn(ids);
     return ModelMapperUtils.convertListToMap(products, Product::getId);
   }
+
+  public Product getProductByCategoryAndName(String category, String name) {
+    return productRepository
+        .findByCategoryAndName(category, name)
+        .orElseThrow(() -> new DataNotFoundException("Cannot found given product."));
+  }
 }

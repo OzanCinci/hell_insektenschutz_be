@@ -38,6 +38,7 @@ public class Review extends Auditable<UUID> implements Serializable {
 
   private Integer rating;
 
+  @Column(length = 1024)
   private String comment;
 
   private Boolean approved;

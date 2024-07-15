@@ -58,7 +58,7 @@ public class SecurityConfiguration {
   }
 
   private void publicRequests(HttpSecurity http) throws Exception {
-    String[] WHITE_LIST_URL = {"/api/auth/**", "/api/product/*"};
+    String[] WHITE_LIST_URL = {"/api/auth/**", "/api/product/*", "/api/product/**"};
 
     http.authorizeHttpRequests((requests) -> requests.requestMatchers(WHITE_LIST_URL).permitAll());
   }
@@ -98,7 +98,11 @@ public class SecurityConfiguration {
   private void secureReviewOperations(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
         (requests) ->
-            requests.requestMatchers(HttpMethod.POST, "/api/review").hasAnyRole(allRoles));
+            requests
+                .requestMatchers(HttpMethod.POST, "/api/review")
+                .hasAnyRole(allRoles)
+                .requestMatchers(HttpMethod.GET, "api/review")
+                .permitAll());
   }
 
   private void secureOrderOperations(HttpSecurity http) throws Exception {

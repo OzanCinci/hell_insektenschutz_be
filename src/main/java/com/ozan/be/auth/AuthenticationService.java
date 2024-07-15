@@ -15,6 +15,7 @@ import com.ozan.be.token.TokenType;
 import com.ozan.be.user.User;
 import com.ozan.be.user.UserRepository;
 import com.ozan.be.utils.ModelMapperUtils;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +42,7 @@ public class AuthenticationService {
         .orElseThrow(() -> new DataNotFoundException("User with email: " + email + " not found."));
   }
 
+  @Transactional
   public AuthenticationResponseDTO register(RegisterRequestDTO request) {
     User user = ModelMapperUtils.map(request, User.class);
     validateRegisterRequestDTO(user);
