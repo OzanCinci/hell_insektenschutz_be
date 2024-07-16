@@ -9,6 +9,8 @@ import com.ozan.be.auth.dtos.RefreshTokenRequestDTO;
 import com.ozan.be.auth.dtos.RegisterRequestDTO;
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.customException.types.DataNotFoundException;
+import com.ozan.be.mail.MailService;
+import com.ozan.be.mail.domain.MailType;
 import com.ozan.be.token.Token;
 import com.ozan.be.token.TokenRepository;
 import com.ozan.be.token.TokenType;
@@ -31,6 +33,7 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final MailService mailService;
 
   private User findUserByEmail(String email) {
     return repository.findByEmail(email).orElse(null);
@@ -51,6 +54,7 @@ public class AuthenticationService {
     user.setCreatedAt(Instant.now());
 
     User savedUser = repository.save(user);
+    mailService.sendHtmlEmail(savedUser, MailType.REGISTER);
 
     return buildAuthenticationResponseDTO(savedUser, true);
   }

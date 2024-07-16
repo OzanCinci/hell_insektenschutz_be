@@ -17,7 +17,7 @@ public class OrderItem extends Auditable<UUID> implements Serializable {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
       name = "product_id",
       nullable = false,
@@ -35,9 +35,16 @@ public class OrderItem extends Auditable<UUID> implements Serializable {
       foreignKey = @ForeignKey(name = "order_item_order_fk"))
   private Order order;
 
+  @Column(length = 2048)
+  private String attributes;
+
+  private String cartImage;
+
+  private String itemName;
+
+  private String secondaryName;
+
   private Integer quantity;
 
   private Double price;
-
-  private String measurements;
 }

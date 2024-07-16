@@ -31,25 +31,27 @@ public class Order extends Auditable<UUID> implements Serializable {
   private User user;
 
   private String userName;
-
   private String userEmail;
 
   private String paymentMethod;
-
   private Double shippingPrice;
-
-  private Double totalPrice;
-
-  private String address;
+  private Double price;
 
   private String city;
-
-  private Integer postalCode;
-
   private String country;
+  private String doorNumber;
+  private Integer postalCode;
+  private String street;
 
   @Enumerated(EnumType.STRING)
   private OrderStatus orderStatus;
+
+  // to be set by admin
+  private String cargoCode;
+
+  // human readable 9 digit code for order tracing
+  @Column(unique = true, nullable = false)
+  private String traceCode;
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -57,4 +59,6 @@ public class Order extends Auditable<UUID> implements Serializable {
       orphanRemoval = true,
       fetch = FetchType.LAZY)
   private List<OrderItem> orderItems = new ArrayList<>();
+
+  private Integer numberOfItems;
 }

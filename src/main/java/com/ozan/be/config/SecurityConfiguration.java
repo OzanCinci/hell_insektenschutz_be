@@ -108,6 +108,10 @@ public class SecurityConfiguration {
   private void secureOrderOperations(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
         (requests) ->
-            requests.requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole(allRoles));
+            requests
+                .requestMatchers(HttpMethod.POST, "/api/orders")
+                .hasAnyRole(allRoles)
+                .requestMatchers(HttpMethod.POST, "/api/orders/anonymous")
+                .permitAll());
   }
 }

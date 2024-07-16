@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public enum OrderStatus {
+  PENDING_PAYMENT,
   ACTIVE,
   IN_SHIPPING,
   DELIVERED;
