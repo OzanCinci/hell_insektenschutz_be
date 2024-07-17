@@ -39,7 +39,8 @@ public class ModelMapperUtils {
       modelMapper.map(source, destination);
       return destination;
     } catch (Exception e) {
-      log.error("Exception occurred at ModelMapperUtils mapToExisting: " + e.getCause() + e.getMessage());
+      log.error(
+          "Exception occurred at ModelMapperUtils mapToExisting: " + e.getCause() + e.getMessage());
       return null;
     }
   }

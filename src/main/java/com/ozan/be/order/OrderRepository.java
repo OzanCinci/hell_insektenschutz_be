@@ -20,6 +20,5 @@ public interface OrderRepository
 
   Optional<Order> findById(UUID id);
 
-
   boolean existsByTraceCode(String traceCode);
 }

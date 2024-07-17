@@ -1,7 +1,6 @@
 package com.ozan.be.order;
 
 import com.ozan.be.common.BaseController;
-import com.ozan.be.common.dtos.BasicCreateResponseDTO;
 import com.ozan.be.common.dtos.BasicReponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dtos.OrderCreateRequestDTO;

@@ -36,6 +36,7 @@ public class Order extends Auditable<UUID> implements Serializable {
 
   @Enumerated(EnumType.STRING)
   private PaymentMethod paymentMethod;
+
   private Double shippingPrice;
   private Double price;
 

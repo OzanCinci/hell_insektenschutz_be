@@ -1,11 +1,10 @@
 package com.ozan.be.order.dtos;
 
 import com.ozan.be.order.domain.OrderStatus;
+import com.ozan.be.order.domain.PaymentMethod;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
-
-import com.ozan.be.order.domain.PaymentMethod;
 import lombok.Data;
 
 @Data

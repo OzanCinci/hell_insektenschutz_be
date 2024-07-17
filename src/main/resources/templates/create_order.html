@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bestellbestätigung</title>
+    <style>
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #f59f4c;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            background-color: #f59f4c;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        .order-details {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .order-details th, .order-details td {
+            padding: 8px;
+            text-align: left;
+        }
+        .order-item {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 30px;
+            align-items: flex-start;
+            border-bottom: 1px solid black;
+        }
+        .order-item img {
+            width: 200px;
+            height: auto;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h3>Willkommen bei Hell Insekten & Sonnenschutz</h3>
+    </div>
+    <div class="content">
+        <h2>Hallo, <span th:text="${userName}">[Benutzername]</span>!</h2>
+        <p>Vielen Dank für Ihre Bestellung bei Hell Insekten & Sonnenschutz. Sie können die Bestellnummer verwenden, um Ihre Bestellung auf unserer Website zu überprüfen. Hier sind die Details Ihrer Bestellung:</p>
+        <div class="order-details">
+            <h3>Bestelldetails</h3>
+            <table>
+                <tr>
+                    <th>Bestellnummer:</th>
+                    <td th:text="${formattedOrderNumber}">[Bestellnummer]</td>
+                </tr>
+                <tr>
+                    <th>Bestelldatum:</th>
+                    <td th:text="${formattedOrderDate}">[Bestelldatum]</td>
+                </tr>
+                <tr>
+                    <th>Artikel:</th>
+                    <td th:text="${price}">[Gesamtpreis]</td>
+                </tr>
+                <tr>
+                    <th>Versand:</th>
+                    <td th:text="${shippingPrice}">[Versand]</td>
+                </tr>
+                <tr>
+                    <th>Gesamt:</th>
+                    <td th:text="${totalPrice}">[Gesamtpreis]</td>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        <div class="order-items" th:each="item : ${orderItems}">
+            <div class="order-item">
+                <div>
+                    <img th:src="${item.cartImage}" alt="Produktbild" />
+                </div>
+                <div>
+                    <h3 th:text="${item.itemName}">[Produktname]</h3>
+                    <h4 th:text="${item.secondaryName}">[Sekundärer Name]</h4>
+                    <p>Menge: <span th:text="${item.quantity}">[Produktmenge]</span></p>
+                    <p>Preis: <span th:text="${item.price}">[Produktpreis]</span></p>
+                    <ul th:each="attr : ${item.attributes}">
+                        <li th:text="${attr}">[Attribut]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <p>Wenn Sie diese Bestellung nicht getätigt haben, ignorieren Sie bitte diese E-Mail.</p>
+        <br/>
+        <p>Mit freundlichen Grüßen,<br>Das Hell Insekten & Sonnenschutz Team</p>
+        <br/>
+        <div>
+            <img
+                    alt="Firmenlogo"
+                    src="https://hell-insek-pdfs.s3.amazonaws.com/logo.webp"
+                    width="250px"
+                    height="auto"
+            />
+        </div>
+        <div>
+            <div>Lochfeldstraße 30,</div>
+            <div>76437 Rastatt, Deutschland</div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Hell Insekten & Sonnenschutz. Alle Rechte vorbehalten.</p>
+    </div>
+</div>
+</body>
+</html>
