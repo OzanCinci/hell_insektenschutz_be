@@ -2,6 +2,7 @@ package com.ozan.be.mail;
 
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.mail.domain.MailType;
+import com.ozan.be.order.Order;
 import com.ozan.be.user.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -34,10 +35,15 @@ public class MailService {
     }
   }
 
-  public void sendHtmlEmail(User to, MailType mailType) {
+  public void sendHtmlEmail(User to, MailType mailType, Order order) {
     switch (mailType) {
       case REGISTER -> handleRegisterMail(to);
+      case CREATE_ORDER -> handleCreateOrderMail(to, order);
     }
+  }
+
+  private void handleCreateOrderMail(User to, Order order) {
+
   }
 
   private void handleRegisterMail(User to) {

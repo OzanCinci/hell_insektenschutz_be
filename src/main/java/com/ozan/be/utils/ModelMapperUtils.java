@@ -34,6 +34,16 @@ public class ModelMapperUtils {
     }
   }
 
+  public static <S, D> D mapToExisting(S source, D destination) {
+    try {
+      modelMapper.map(source, destination);
+      return destination;
+    } catch (Exception e) {
+      log.error("Exception occurred at ModelMapperUtils mapToExisting: " + e.getCause() + e.getMessage());
+      return null;
+    }
+  }
+
   public static <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
     try {
       return entityList.isEmpty()

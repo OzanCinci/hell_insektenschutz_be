@@ -1,5 +1,6 @@
 package com.ozan.be.mail.domain;
 
 public enum MailType {
-  REGISTER
+  REGISTER,
+  CREATE_ORDER
 }

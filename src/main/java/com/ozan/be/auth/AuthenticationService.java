@@ -54,7 +54,7 @@ public class AuthenticationService {
     user.setCreatedAt(Instant.now());
 
     User savedUser = repository.save(user);
-    mailService.sendHtmlEmail(savedUser, MailType.REGISTER);
+    mailService.sendHtmlEmail(savedUser, MailType.REGISTER, null);
 
     return buildAuthenticationResponseDTO(savedUser, true);
   }

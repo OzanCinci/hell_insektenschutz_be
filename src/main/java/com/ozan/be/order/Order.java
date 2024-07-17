@@ -2,6 +2,7 @@ package com.ozan.be.order;
 
 import com.ozan.be.common.Auditable;
 import com.ozan.be.order.domain.OrderStatus;
+import com.ozan.be.order.domain.PaymentMethod;
 import com.ozan.be.user.User;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -33,7 +34,8 @@ public class Order extends Auditable<UUID> implements Serializable {
   private String userName;
   private String userEmail;
 
-  private String paymentMethod;
+  @Enumerated(EnumType.STRING)
+  private PaymentMethod paymentMethod;
   private Double shippingPrice;
   private Double price;
 
@@ -61,4 +63,5 @@ public class Order extends Auditable<UUID> implements Serializable {
   private List<OrderItem> orderItems = new ArrayList<>();
 
   private Integer numberOfItems;
+  private Boolean emailSent;
 }

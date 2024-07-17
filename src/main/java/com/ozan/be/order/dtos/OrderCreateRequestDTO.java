@@ -1,6 +1,7 @@
 package com.ozan.be.order.dtos;
 
 import com.ozan.be.order.domain.OrderStatus;
+import com.ozan.be.order.domain.PaymentMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import lombok.Data;
 
 @Data
 public class OrderCreateRequestDTO implements Serializable {
-  @NotNull private String paymentMethod;
+  @NotNull private PaymentMethod paymentMethod;
 
   @NotNull private Double shippingPrice;
 

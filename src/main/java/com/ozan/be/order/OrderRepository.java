@@ -19,4 +19,7 @@ public interface OrderRepository
   Page<Order> findAll(Predicate filter, Pageable pageable);
 
   Optional<Order> findById(UUID id);
+
+
+  boolean existsByTraceCode(String traceCode);
 }

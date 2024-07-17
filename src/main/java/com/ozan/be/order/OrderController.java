@@ -5,6 +5,7 @@ import com.ozan.be.common.dtos.BasicCreateResponseDTO;
 import com.ozan.be.common.dtos.BasicReponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dtos.OrderCreateRequestDTO;
+import com.ozan.be.order.dtos.OrderResponseDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -29,10 +30,11 @@ public class OrderController extends BaseController {
   }
 
   @PostMapping
-  public ResponseEntity<BasicCreateResponseDTO> createOrdersAuthUser(
+  public ResponseEntity<OrderResponseDTO> createOrdersAuthUser(
       @Valid @RequestBody CreateOrderRequestDTO requestDTO) {
     UUID userId = getCurrentUser().getId();
-    return ResponseEntity.ok(new BasicCreateResponseDTO(userId));
+    OrderResponseDTO responseDTO = orderService.createOrdersAuthUser(userId, requestDTO);
+    return ResponseEntity.ok(responseDTO);
   }
 
   @PostMapping("/anonymous")

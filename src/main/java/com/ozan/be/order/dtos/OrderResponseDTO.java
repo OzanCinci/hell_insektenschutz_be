@@ -4,6 +4,8 @@ import com.ozan.be.order.domain.OrderStatus;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
+
+import com.ozan.be.order.domain.PaymentMethod;
 import lombok.Data;
 
 @Data
@@ -11,7 +13,7 @@ public class OrderResponseDTO implements Serializable {
   private UUID id;
   private String userName;
   private String userEmail;
-  private String paymentMethod;
+  private PaymentMethod paymentMethod;
   private Double shippingPrice;
   private Double totalPrice;
   private String address;
