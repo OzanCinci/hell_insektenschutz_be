@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class UniqueCodeGenerator {
-  private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  private static final String ALPHANUM = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
   private static final Random RANDOM = new SecureRandom();
 
   public static String generateUniqueCode(int length) {

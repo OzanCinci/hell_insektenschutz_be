@@ -112,6 +112,8 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/api/orders")
                 .hasAnyRole(allRoles)
                 .requestMatchers(HttpMethod.POST, "/api/orders/anonymous")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/orders/*")
                 .permitAll());
   }
 }

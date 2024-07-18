@@ -8,10 +8,10 @@ import com.ozan.be.mail.MailService;
 import com.ozan.be.mail.domain.MailType;
 import com.ozan.be.order.domain.OrderStatus;
 import com.ozan.be.order.domain.PaymentMethod;
+import com.ozan.be.order.dto.CreateOrderItemResponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
+import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import com.ozan.be.order.dto.OrderSingleItemRequestDTO;
-import com.ozan.be.order.dtos.OrderCreateRequestDTO;
-import com.ozan.be.order.dtos.OrderItemRequestDTO;
 import com.ozan.be.order.dtos.OrderItemResponseDTO;
 import com.ozan.be.order.dtos.OrderResponseDTO;
 import com.ozan.be.product.Product;
@@ -70,6 +70,13 @@ public class OrderService {
         .orElseThrow(() -> new DataNotFoundException("No order found with id: " + id));
   }
 
+  private Order findOrderByTraceCodeThrowsException(String traceCode) {
+    return orderRepository
+        .findByTraceCode(traceCode)
+        .orElseThrow(
+            () -> new DataNotFoundException("No order found with trace code: " + traceCode));
+  }
+
   public void updateOrderStatus(UUID id, OrderStatus orderStatus) {
     Order order = findOrderByIdThrowsException(id);
 
@@ -86,6 +93,7 @@ public class OrderService {
     }
   }
 
+  /*
   @Transactional
   public void createOrder(UUID userId, OrderCreateRequestDTO requestDTO) {
     User user = userService.getUserById(userId);
@@ -123,8 +131,11 @@ public class OrderService {
     orderRepository.saveAndFlush(order);
   }
 
+   */
+
   @Transactional
-  public OrderResponseDTO createOrdersAuthUser(UUID userId, CreateOrderRequestDTO requestDTO) {
+  public CreateOrderResponseDTO createOrdersAuthUser(
+      UUID userId, CreateOrderRequestDTO requestDTO) {
     User user = userService.getUserById(userId);
 
     Order order = ModelMapperUtils.map(requestDTO.getAddress(), Order.class);
@@ -169,8 +180,13 @@ public class OrderService {
     Order savedOrder = orderRepository.saveAndFlush(order);
     mailService.sendHtmlEmail(savedOrder.getUser(), MailType.CREATE_ORDER, savedOrder);
 
-    throw new BadRequestException("stop!");
-    // return new OrderResponseDTO();
+    CreateOrderResponseDTO responseDTO =
+        ModelMapperUtils.map(savedOrder, CreateOrderResponseDTO.class);
+    List<CreateOrderItemResponseDTO> orderItemResponseDTOS =
+        ModelMapperUtils.mapAll(savedOrder.getOrderItems(), CreateOrderItemResponseDTO.class);
+    responseDTO.setOrderItems(orderItemResponseDTOS);
+
+    return responseDTO;
   }
 
   private void setUniqueTraceCode(Order order) {
@@ -179,5 +195,14 @@ public class OrderService {
       traceCode = UniqueCodeGenerator.generateUniqueCode(9); // Adjust length as needed
     } while (orderRepository.existsByTraceCode(traceCode));
     order.setTraceCode(traceCode);
+  }
+
+  public CreateOrderResponseDTO getOrderByTraceCode(String traceCode) {
+    Order order = findOrderByTraceCodeThrowsException(traceCode);
+    CreateOrderResponseDTO responseDTO = ModelMapperUtils.map(order, CreateOrderResponseDTO.class);
+    List<CreateOrderItemResponseDTO> orderItemResponseDTOS =
+        ModelMapperUtils.mapAll(order.getOrderItems(), CreateOrderItemResponseDTO.class);
+    responseDTO.setOrderItems(orderItemResponseDTOS);
+    return responseDTO;
   }
 }

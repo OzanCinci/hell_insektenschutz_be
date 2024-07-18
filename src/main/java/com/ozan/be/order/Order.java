@@ -45,6 +45,7 @@ public class Order extends Auditable<UUID> implements Serializable {
   private String doorNumber;
   private Integer postalCode;
   private String street;
+  private String state;
 
   @Enumerated(EnumType.STRING)
   private OrderStatus orderStatus;
