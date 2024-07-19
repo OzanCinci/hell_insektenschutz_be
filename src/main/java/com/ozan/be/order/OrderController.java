@@ -6,6 +6,9 @@ import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,5 +52,13 @@ public class OrderController extends BaseController {
       @PathVariable("traceCode") String traceCode) {
     CreateOrderResponseDTO responseDTO = orderService.getOrderByTraceCode(traceCode);
     return ResponseEntity.ok(responseDTO);
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<Page<CreateOrderResponseDTO>> getOrdersByUserId(
+      @PageableDefault(size = 5) Pageable pageable) {
+    UUID userId = getCurrentUser().getId();
+    Page<CreateOrderResponseDTO> responseDTOS = orderService.getOrdersByUserId(pageable, userId);
+    return ResponseEntity.ok(responseDTOS);
   }
 }

@@ -13,4 +13,5 @@ public class CreateOrderItemResponseDTO implements Serializable {
   private String cartImage;
   private Integer quantity;
   private Double price;
+  private UUID productId;
 }

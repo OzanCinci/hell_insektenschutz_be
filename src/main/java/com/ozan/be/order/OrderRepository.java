@@ -15,7 +15,7 @@ public interface OrderRepository
     extends JpaRepository<Order, UUID>, QuerydslPredicateExecutor<Order> {
 
   @Override
-  @EntityGraph(attributePaths = {"orderItems"})
+  @EntityGraph(attributePaths = {"orderItems", "orderItems.product"})
   Page<Order> findAll(Predicate filter, Pageable pageable);
 
   Optional<Order> findById(UUID id);

@@ -205,4 +205,35 @@ public class OrderService {
     responseDTO.setOrderItems(orderItemResponseDTOS);
     return responseDTO;
   }
+
+  public Page<CreateOrderResponseDTO> getOrdersByUserId(Pageable pageable, UUID userId) {
+    Predicate filter = QOrder.order.user.id.eq(userId);
+    Pageable finalPageable = PageableUtils.prepareAuditSorting(pageable);
+    Page<Order> orderPage = orderRepository.findAll(filter, finalPageable);
+
+    List<CreateOrderResponseDTO> orderResponseDTOList =
+        orderPage.getContent().stream()
+            .map(
+                order -> {
+                  CreateOrderResponseDTO responseDTO =
+                      ModelMapperUtils.map(order, CreateOrderResponseDTO.class);
+                  List<CreateOrderItemResponseDTO> orderItemResponseDTOS =
+                      order.getOrderItems().stream()
+                          .map(
+                              orderItem -> {
+                                CreateOrderItemResponseDTO itemResponseDTO =
+                                    ModelMapperUtils.map(
+                                        orderItem, CreateOrderItemResponseDTO.class);
+                                itemResponseDTO.setProductId(orderItem.getProduct().getId());
+                                return itemResponseDTO;
+                              })
+                          .collect(Collectors.toList());
+                  responseDTO.setOrderItems(orderItemResponseDTOS);
+                  return responseDTO;
+                })
+            .toList();
+
+    return new PageImpl<>(
+        orderResponseDTOList, orderPage.getPageable(), orderPage.getTotalElements());
+  }
 }
