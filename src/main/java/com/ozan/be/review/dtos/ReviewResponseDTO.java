@@ -1,6 +1,7 @@
 package com.ozan.be.review.dtos;
 
 import com.ozan.be.product.Product;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.Data;
 
@@ -19,4 +20,10 @@ public class ReviewResponseDTO {
   private String comment;
 
   private Boolean approved;
+
+  private Instant createdAt;
+
+  private String itemName;
+
+  private String secondaryName;
 }

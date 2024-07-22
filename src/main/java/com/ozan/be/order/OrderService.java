@@ -12,8 +12,7 @@ import com.ozan.be.order.dto.CreateOrderItemResponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import com.ozan.be.order.dto.OrderSingleItemRequestDTO;
-import com.ozan.be.order.dtos.OrderItemResponseDTO;
-import com.ozan.be.order.dtos.OrderResponseDTO;
+import com.ozan.be.order.dto.UpdateCargoInfoRequestDTO;
 import com.ozan.be.product.Product;
 import com.ozan.be.product.ProductService;
 import com.ozan.be.user.User;
@@ -43,25 +42,9 @@ public class OrderService {
   private final ProductService productService;
   private final MailService mailService;
 
-  public Page<OrderResponseDTO> getAllOrders(Pageable pageable, Predicate filter) {
+  public Page<CreateOrderResponseDTO> getAllOrders(Pageable pageable, Predicate filter) {
     Pageable finalPageable = PageableUtils.prepareAuditSorting(pageable);
-    Page<Order> orderPage = orderRepository.findAll(filter, finalPageable);
-
-    List<OrderResponseDTO> orderResponseDTOList =
-        orderPage.getContent().stream()
-            .map(
-                order -> {
-                  OrderResponseDTO responseDTO =
-                      ModelMapperUtils.map(order, OrderResponseDTO.class);
-                  List<OrderItemResponseDTO> orderItemResponseDTOList =
-                      ModelMapperUtils.mapAll(order.getOrderItems(), OrderItemResponseDTO.class);
-                  responseDTO.setOrderItems(orderItemResponseDTOList);
-                  return responseDTO;
-                })
-            .toList();
-
-    return new PageImpl<>(
-        orderResponseDTOList, orderPage.getPageable(), orderPage.getTotalElements());
+    return buildCreateOrderResponseDTO(filter, finalPageable);
   }
 
   private Order findOrderByIdThrowsException(UUID id) {
@@ -77,12 +60,15 @@ public class OrderService {
             () -> new DataNotFoundException("No order found with trace code: " + traceCode));
   }
 
-  public void updateOrderStatus(UUID id, OrderStatus orderStatus) {
+  public void updateOrderStatus(
+      UUID id, OrderStatus orderStatus, UpdateCargoInfoRequestDTO cargoInfoRequestDTO) {
     Order order = findOrderByIdThrowsException(id);
 
-    validateOrderStatusChange(order.getOrderStatus(), orderStatus);
+    // ask business decision before going live
+    // validateOrderStatusChange(order.getOrderStatus(), orderStatus);
 
     order.setOrderStatus(orderStatus);
+    order.setCargoCode(cargoInfoRequestDTO.getCargoCode());
     orderRepository.saveAndFlush(order);
   }
 
@@ -92,46 +78,6 @@ public class OrderService {
       throw new BadRequestException("Invalid order status request for the current order.");
     }
   }
-
-  /*
-  @Transactional
-  public void createOrder(UUID userId, OrderCreateRequestDTO requestDTO) {
-    User user = userService.getUserById(userId);
-
-    Order order = ModelMapperUtils.map(requestDTO, Order.class);
-    order.setUserEmail(user.getEmail());
-    order.setUserName(user.getFirstName() + " " + user.getLastName());
-    order.setUser(user);
-
-    Set<UUID> requiredProductIds =
-        requestDTO.getOrderItemsList().stream()
-            .map(OrderItemRequestDTO::getProductId)
-            .collect(Collectors.toSet());
-
-    Map<UUID, Product> productMap = productService.findByIdInAndMapByUUID(requiredProductIds);
-
-    List<OrderItem> orderItems =
-        requestDTO.getOrderItemsList().stream()
-            .map(
-                oi -> {
-                  if (!productMap.containsKey(oi.getProductId())) {
-                    throw new BadRequestException("No product found with id: " + oi.getProductId());
-                  }
-
-                  OrderItem orderItem = ModelMapperUtils.map(oi, OrderItem.class);
-                  orderItem.setOrder(order);
-                  Product product = productMap.get(oi.getProductId());
-                  orderItem.setProduct(product);
-
-                  return orderItem;
-                })
-            .toList();
-
-    order.getOrderItems().addAll(orderItems);
-    orderRepository.saveAndFlush(order);
-  }
-
-   */
 
   @Transactional
   public CreateOrderResponseDTO createOrdersAuthUser(
@@ -209,6 +155,11 @@ public class OrderService {
   public Page<CreateOrderResponseDTO> getOrdersByUserId(Pageable pageable, UUID userId) {
     Predicate filter = QOrder.order.user.id.eq(userId);
     Pageable finalPageable = PageableUtils.prepareAuditSorting(pageable);
+    return buildCreateOrderResponseDTO(filter, finalPageable);
+  }
+
+  private PageImpl<CreateOrderResponseDTO> buildCreateOrderResponseDTO(
+      Predicate filter, Pageable finalPageable) {
     Page<Order> orderPage = orderRepository.findAll(filter, finalPageable);
 
     List<CreateOrderResponseDTO> orderResponseDTOList =

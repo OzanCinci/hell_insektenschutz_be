@@ -20,4 +20,10 @@ public class ReviewSummaryDTO implements Serializable {
   private Boolean approved;
 
   private Instant createdAt;
+
+  private String reviewImage;
+
+  private String itemName;
+
+  private String secondaryName;
 }

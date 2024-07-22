@@ -41,4 +41,12 @@ public class ReviewController extends BaseController {
         reviewService.getAllReviewsWithoutProduct(pageable, reviewSearchFilter.getPredicate());
     return ResponseEntity.ok(response);
   }
+
+  @GetMapping("/me")
+  public ResponseEntity<Page<ReviewSummaryDTO>> getReviewsByUserId(
+      @PageableDefault(size = 5) Pageable pageable) {
+    UUID userId = getCurrentUser().getId();
+    Page<ReviewSummaryDTO> response = reviewService.getReviewsByUserId(pageable, userId);
+    return ResponseEntity.ok(response);
+  }
 }

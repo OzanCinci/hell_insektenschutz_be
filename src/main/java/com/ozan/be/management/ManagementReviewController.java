@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagementReviewController extends BaseController {
   private final ReviewService reviewService;
 
-  @GetMapping("/")
+  @GetMapping
   public ResponseEntity<Page<ReviewResponseDTO>> getAllReviews(
-      @PageableDefault(size = 5) Pageable pageable,
+      @PageableDefault(size = 10) Pageable pageable,
       @ParameterObject ReviewSearchFilter reviewSearchFilter) {
     Page<ReviewResponseDTO> response =
         reviewService.getAllReviews(pageable, reviewSearchFilter.getPredicate());

@@ -77,6 +77,8 @@ public class SecurityConfiguration {
     http.authorizeHttpRequests(
         (requests) ->
             requests
+                .requestMatchers(HttpMethod.PUT, "/api/management/users/change-role/*/*")
+                .hasAnyRole(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.GET, "/api/management/**")
                 .hasAnyRole(managementRoles)
                 .requestMatchers(HttpMethod.PUT, "/api/management/**")
@@ -101,7 +103,9 @@ public class SecurityConfiguration {
             requests
                 .requestMatchers(HttpMethod.POST, "/api/review")
                 .hasAnyRole(allRoles)
-                .requestMatchers(HttpMethod.GET, "api/review")
+                .requestMatchers(HttpMethod.GET, "/api/review/me")
+                .hasAnyRole(allRoles)
+                .requestMatchers(HttpMethod.GET, "/api/review")
                 .permitAll());
   }
 

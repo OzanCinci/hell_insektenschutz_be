@@ -24,4 +24,7 @@ public interface ReviewRepository
 
   @Query(value = "SELECT product_id FROM review WHERE user_id = :userId", nativeQuery = true)
   Set<UUID> findProductIdsByUserId(UUID userId);
+
+  boolean existsByUser_IdAndItemNameAndSecondaryName(
+      UUID userId, String itemName, String secondaryName);
 }

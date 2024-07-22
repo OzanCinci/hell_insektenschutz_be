@@ -14,7 +14,6 @@ import com.ozan.be.utils.PageableUtils;
 import com.querydsl.core.types.Predicate;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -112,26 +111,30 @@ public class ReviewService {
   public UUID createReview(ReviewRequestDTO requestDTO, UUID userId) {
     User user = userService.getUserById(userId);
 
-    // TODO: remove comment when go prod!
-    validateNoMultipleReviewForSameProduct(userId, requestDTO.getProductId());
+    validateNoMultipleReviewForSameProduct(userId, requestDTO);
 
     Product product = productService.getProductByIdThrowsException(requestDTO.getProductId());
 
-    Review review = new Review();
+    Review review = ModelMapperUtils.map(requestDTO, Review.class);
     review.setProduct(product);
     review.setUser(user);
-    review.setRating(requestDTO.getRating());
-    review.setComment(requestDTO.getComment());
     review.setApproved(false);
 
     Review savedReview = reviewRepository.saveAndFlush(review);
     return savedReview.getId();
   }
 
-  private void validateNoMultipleReviewForSameProduct(UUID userId, UUID productId) {
-    Set<UUID> reviewedProducts = reviewRepository.findProductIdsByUserId(userId);
-    if (reviewedProducts.contains(productId)) {
+  private void validateNoMultipleReviewForSameProduct(UUID userId, ReviewRequestDTO requestDTO) {
+    Boolean exists =
+        reviewRepository.existsByUser_IdAndItemNameAndSecondaryName(
+            userId, requestDTO.getItemName(), requestDTO.getSecondaryName());
+    if (exists) {
       throw new BadRequestException("You have already made a review on this product.");
     }
+  }
+
+  public Page<ReviewSummaryDTO> getReviewsByUserId(Pageable pageable, UUID userId) {
+    Predicate filter = QReview.review.user.id.eq(userId);
+    return getAllReviewsWithoutProduct(pageable, filter);
   }
 }

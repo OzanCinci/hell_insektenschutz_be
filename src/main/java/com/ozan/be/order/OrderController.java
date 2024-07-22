@@ -23,16 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController extends BaseController {
   private final OrderService orderService;
 
-  /*
-  @PostMapping("/")
-  public ResponseEntity<BasicReponseDTO> createOrder(
-      @Valid @RequestBody OrderCreateRequestDTO requestDTO) {
-    UUID userId = getCurrentUser().getId();
-    orderService.createOrder(userId, requestDTO);
-    return ResponseEntity.ok(new BasicReponseDTO(true));
-  }
-   */
-
   @PostMapping
   public ResponseEntity<CreateOrderResponseDTO> createOrdersAuthUser(
       @Valid @RequestBody CreateOrderRequestDTO requestDTO) {

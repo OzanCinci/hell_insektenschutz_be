@@ -27,5 +27,6 @@ public class CreateOrderResponseDTO implements Serializable {
   private String cargoCode;
   private Integer numberOfItems;
   private Instant createdAt;
+  private Instant updatedAt;
   private List<CreateOrderItemResponseDTO> orderItems;
 }

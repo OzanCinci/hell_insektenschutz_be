@@ -42,4 +42,10 @@ public class Review extends Auditable<UUID> implements Serializable {
   private String comment;
 
   private Boolean approved;
+
+  private String reviewImage;
+
+  private String itemName;
+
+  private String secondaryName;
 }

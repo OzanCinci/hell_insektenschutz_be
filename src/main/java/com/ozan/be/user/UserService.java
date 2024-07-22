@@ -1,6 +1,7 @@
 package com.ozan.be.user;
 
 import com.ozan.be.customException.types.DataNotFoundException;
+import com.ozan.be.user.domain.Role;
 import com.ozan.be.user.dtos.ChangePasswordRequestDTO;
 import com.ozan.be.user.dtos.UserResponseDTO;
 import com.ozan.be.utils.ModelMapperUtils;
@@ -63,5 +64,11 @@ public class UserService {
 
     // save the new password
     repository.save(user);
+  }
+
+  public void changeRole(UUID id, Role role) {
+    User user = getUserById(id);
+    user.setRole(role);
+    repository.saveAndFlush(user);
   }
 }
