@@ -174,6 +174,18 @@ public class MainApplication {
       productRepository.saveAndFlush(product2);
        */
 
+      /*
+      RegisterRequestDTO requestDTO = new RegisterRequestDTO();
+      requestDTO.setEmail("anon@mail.com");
+      requestDTO.setFirstName("Besucher");
+      requestDTO.setLastName("Besucher");
+      requestDTO.setPassword("password1234Besucher..&&##");
+      requestDTO.setRole(USER);
+      requestDTO.setPhone("-");
+
+      System.out.println("Visitor token: " + service.register(requestDTO).getAccessToken());
+       */
+
     };
   }
 }

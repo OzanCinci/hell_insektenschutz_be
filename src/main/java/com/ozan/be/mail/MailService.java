@@ -1,9 +1,12 @@
 package com.ozan.be.mail;
 
+import static java.util.Objects.nonNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.mail.domain.MailType;
 import com.ozan.be.order.Order;
+import com.ozan.be.order.domain.OrderStatus;
 import com.ozan.be.user.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -50,6 +53,9 @@ public class MailService {
     // Format order number
     String formattedOrderNumber = order.getTraceCode().replaceAll("(.{3})(.{3})(.{3})", "$1-$2-$3");
     context.setVariable("formattedOrderNumber", formattedOrderNumber);
+
+    String cargoCode = nonNull(order.getCargoCode()) ? order.getCargoCode() : "-";
+    context.setVariable("cargoCode", cargoCode);
 
     // Format order date
     DateTimeFormatter formatter =
@@ -103,7 +109,13 @@ public class MailService {
                 })
             .collect(Collectors.toList()));
 
-    String htmlContent = templateEngine.process("create_order", context);
+    String htmlContent;
+    if (OrderStatus.PENDING_PAYMENT.equals(order.getOrderStatus())) {
+      htmlContent = templateEngine.process("create_order_pending", context);
+    } else {
+      htmlContent = templateEngine.process("create_order", context);
+    }
+
     sendMail(to.getEmail(), subject, htmlContent);
   }
 

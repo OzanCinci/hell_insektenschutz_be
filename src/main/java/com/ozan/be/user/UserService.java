@@ -41,6 +41,12 @@ public class UserService {
         .orElseThrow(() -> new DataNotFoundException("No user found with id: " + id));
   }
 
+  public User getUserByMail(String email) {
+    return repository
+        .findByEmail(email)
+        .orElseThrow(() -> new DataNotFoundException("No user found with email: " + email));
+  }
+
   public UserResponseDTO getUserDetails(UUID id) {
     User user = getUserById(id);
     return ModelMapperUtils.map(user, UserResponseDTO.class);

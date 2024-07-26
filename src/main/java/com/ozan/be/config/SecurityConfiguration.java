@@ -58,7 +58,9 @@ public class SecurityConfiguration {
   }
 
   private void publicRequests(HttpSecurity http) throws Exception {
-    String[] WHITE_LIST_URL = {"/api/auth/**", "/api/product/*", "/api/product/**"};
+    String[] WHITE_LIST_URL = {
+      "/api/auth/**", "/api/product/*", "/api/product/**", "/api/transactions"
+    };
 
     http.authorizeHttpRequests((requests) -> requests.requestMatchers(WHITE_LIST_URL).permitAll());
   }

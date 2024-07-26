@@ -3,6 +3,7 @@ package com.ozan.be.order;
 import com.ozan.be.common.BaseController;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
+import com.ozan.be.order.dto.CreateOrderVisitorRequestDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -32,9 +33,10 @@ public class OrderController extends BaseController {
   }
 
   @PostMapping("/anonymous")
-  public ResponseEntity<String> createOrdersVisitor(
-      @Valid @RequestBody CreateOrderRequestDTO requestDTO) {
-    return ResponseEntity.ok("Ok");
+  public ResponseEntity<CreateOrderResponseDTO> createOrdersVisitor(
+      @Valid @RequestBody CreateOrderVisitorRequestDTO requestDTO) {
+    CreateOrderResponseDTO responseDTO = orderService.createOrdersVisitor(requestDTO);
+    return ResponseEntity.ok(responseDTO);
   }
 
   @GetMapping("/{traceCode}")

@@ -1,6 +1,9 @@
 package com.ozan.be.order;
 
-import static com.ozan.be.order.domain.OrderStatus.ACTIVE;
+import static com.ozan.be.order.domain.PaymentMethod.CREDIT_CART;
+import static com.ozan.be.order.domain.PaymentMethod.PAY_WITH_BANK_TRANSFER;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.customException.types.DataNotFoundException;
@@ -11,10 +14,13 @@ import com.ozan.be.order.domain.PaymentMethod;
 import com.ozan.be.order.dto.CreateOrderItemResponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
+import com.ozan.be.order.dto.CreateOrderVisitorRequestDTO;
 import com.ozan.be.order.dto.OrderSingleItemRequestDTO;
 import com.ozan.be.order.dto.UpdateCargoInfoRequestDTO;
 import com.ozan.be.product.Product;
 import com.ozan.be.product.ProductService;
+import com.ozan.be.transactions.TransactionRecord;
+import com.ozan.be.transactions.TransactionRecordService;
 import com.ozan.be.user.User;
 import com.ozan.be.user.UserService;
 import com.ozan.be.utils.ModelMapperUtils;
@@ -40,6 +46,7 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final UserService userService;
   private final ProductService productService;
+  private final TransactionRecordService transactionRecordService;
   private final MailService mailService;
 
   public Page<CreateOrderResponseDTO> getAllOrders(Pageable pageable, Predicate filter) {
@@ -86,8 +93,12 @@ public class OrderService {
 
     Order order = ModelMapperUtils.map(requestDTO.getAddress(), Order.class);
     order = ModelMapperUtils.mapToExisting(requestDTO.getCart(), order);
-    order.setPaymentMethod(PaymentMethod.CREDIT_CART);
-    order.setOrderStatus(ACTIVE);
+
+    PaymentMethod paymentMethod =
+        isNull(requestDTO.getTransactionID()) ? PAY_WITH_BANK_TRANSFER : CREDIT_CART;
+    order.setPaymentMethod(paymentMethod);
+
+    order.setOrderStatus(requestDTO.getOrderStatus());
     order.setUserEmail(user.getEmail());
     order.setUserName(user.getFirstName() + " " + user.getLastName());
     order.setUser(user);
@@ -124,7 +135,22 @@ public class OrderService {
     setUniqueTraceCode(order);
 
     Order savedOrder = orderRepository.saveAndFlush(order);
-    mailService.sendHtmlEmail(savedOrder.getUser(), MailType.CREATE_ORDER, savedOrder);
+
+    // SEND USER AN E-MAIL
+    try {
+      mailService.sendHtmlEmail(savedOrder.getUser(), MailType.CREATE_ORDER, savedOrder);
+    } catch (Exception e) {
+      // log fail...
+    }
+
+    // UPDATE TRANSACTION
+    if (nonNull(requestDTO.getTransactionID())) {
+      TransactionRecord transactionRecord =
+          transactionRecordService.findTransactionRecordByIdThrowsException(
+              requestDTO.getTransactionID());
+      transactionRecord.setTraceCode(savedOrder.getTraceCode());
+      transactionRecordService.saveAndFlush(transactionRecord);
+    }
 
     CreateOrderResponseDTO responseDTO =
         ModelMapperUtils.map(savedOrder, CreateOrderResponseDTO.class);
@@ -186,5 +212,82 @@ public class OrderService {
 
     return new PageImpl<>(
         orderResponseDTOList, orderPage.getPageable(), orderPage.getTotalElements());
+  }
+
+  public CreateOrderResponseDTO createOrdersVisitor(CreateOrderVisitorRequestDTO requestDTO) {
+    User anonUser = userService.getUserByMail("anon@mail.com");
+
+    Order order = ModelMapperUtils.map(requestDTO.getAddress(), Order.class);
+    order = ModelMapperUtils.mapToExisting(requestDTO.getCart(), order);
+
+    PaymentMethod paymentMethod =
+        isNull(requestDTO.getTransactionID()) ? PAY_WITH_BANK_TRANSFER : CREDIT_CART;
+    order.setPaymentMethod(paymentMethod);
+
+    order.setOrderStatus(requestDTO.getOrderStatus());
+    order.setUserEmail(requestDTO.getEmail());
+    order.setUserName(requestDTO.getFirstName() + " " + requestDTO.getLastName());
+    order.setUser(anonUser);
+
+    Set<UUID> requiredProductIds =
+        requestDTO.getCart().getItems().stream()
+            .map(OrderSingleItemRequestDTO::getProductID)
+            .collect(Collectors.toSet());
+    Map<UUID, Product> productMap = productService.findByIdInAndMapByUUID(requiredProductIds);
+
+    List<OrderItem> orderItems =
+        requestDTO.getCart().getItems().stream()
+            .map(
+                oi -> {
+                  if (!productMap.containsKey(oi.getProductID())) {
+                    throw new BadRequestException("No product found with id: " + oi.getProductID());
+                  }
+
+                  OrderItem orderItem = ModelMapperUtils.map(oi, OrderItem.class);
+                  Product product = productMap.get(oi.getProductID());
+                  orderItem.setProduct(product);
+
+                  return orderItem;
+                })
+            .toList();
+
+    // Ensure orderItems is not null and not empty
+    if (orderItems != null && !orderItems.isEmpty()) {
+      for (OrderItem orderItem : orderItems) {
+        orderItem.setOrder(order);
+      }
+      order.getOrderItems().addAll(orderItems);
+    }
+    setUniqueTraceCode(order);
+
+    Order savedOrder = orderRepository.saveAndFlush(order);
+
+    // SEND USER AN E-MAIL
+    try {
+      User tempUser = new User();
+      tempUser.setEmail(requestDTO.getEmail());
+      tempUser.setFirstName(requestDTO.getFirstName());
+      tempUser.setLastName(requestDTO.getLastName());
+      mailService.sendHtmlEmail(tempUser, MailType.CREATE_ORDER, savedOrder);
+    } catch (Exception e) {
+      // log fail...
+    }
+
+    // UPDATE TRANSACTION
+    if (nonNull(requestDTO.getTransactionID())) {
+      TransactionRecord transactionRecord =
+          transactionRecordService.findTransactionRecordByIdThrowsException(
+              requestDTO.getTransactionID());
+      transactionRecord.setTraceCode(savedOrder.getTraceCode());
+      transactionRecordService.saveAndFlush(transactionRecord);
+    }
+
+    CreateOrderResponseDTO responseDTO =
+        ModelMapperUtils.map(savedOrder, CreateOrderResponseDTO.class);
+    List<CreateOrderItemResponseDTO> orderItemResponseDTOS =
+        ModelMapperUtils.mapAll(savedOrder.getOrderItems(), CreateOrderItemResponseDTO.class);
+    responseDTO.setOrderItems(orderItemResponseDTOS);
+
+    return responseDTO;
   }
 }
