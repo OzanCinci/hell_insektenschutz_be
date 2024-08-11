@@ -52,7 +52,7 @@ public class ExternalProductsService {
     }
 
     Product product = kasondaApiService.getProductList(category);
-    long TTL = calculateTTLByMinute(1);
+    long TTL = calculateTTLByMinute(30);
     cacheProduct(category, product, TTL);
     return product;
   }
@@ -64,7 +64,7 @@ public class ExternalProductsService {
     }
 
     KasondaPriceResponseDTO price = kasondaApiService.getPrice(requestDTO);
-    long TTL = calculateTTLByMinute(1);
+    long TTL = calculateTTLByMinute(30);
     cachePrice(key, price, TTL);
     return price;
   }
@@ -89,7 +89,7 @@ public class ExternalProductsService {
     colorOption.setSubCategories(product.getSubCategories());
     colorOption.setBlendColors(product.blendColors);
 
-    long TTL = calculateTTLByMinute(1);
+    long TTL = calculateTTLByMinute(30);
     cacheColorOption(key, colorOption, TTL);
 
     return colorOption;

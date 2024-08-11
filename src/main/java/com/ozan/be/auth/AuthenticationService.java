@@ -126,7 +126,7 @@ public class AuthenticationService {
     String refreshToken = jwtService.generateRefreshToken(user);
 
     if (!isRegisterRequest) {
-      revokeAllUserTokens(user);
+      // revokeAllUserTokens(user);
     }
 
     saveUserToken(user, accessToken);
