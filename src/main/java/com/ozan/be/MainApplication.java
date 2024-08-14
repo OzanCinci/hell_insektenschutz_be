@@ -38,16 +38,6 @@ public class MainApplication {
     return args -> {
 
       /*
-           RegisterRequestDTO requestDTO = new RegisterRequestDTO();
-           requestDTO.setEmail("Info@hell-insektenschutz.de");
-           requestDTO.setFirstName("Hakan");
-           requestDTO.setLastName("Aydin");
-           requestDTO.setPassword("MertNisa2002");
-           requestDTO.setPhone("-");
-           requestDTO.setRole(ADMIN);
-
-           System.out.println("Admin token: " + service.register(requestDTO).getAccessToken());
-
            Product product = new Product();
            product.setName("Basic Plissee");
            product.setCategory("Plissee");
@@ -149,20 +139,6 @@ public class MainApplication {
            product7.setDescription("Holzjalousien verleihen Wohnräumen eine besondere Atmosphäre. Dieser Sicht- und Sonnenschutz ist eine moderne Hommage an traditionelle Fensterläden. Gemütlich, stilvoll und individuell, sind Holzjalousien sowohl funktional als auch ästhetisch. Holzjalousien aus Echtholz mit 25-50 mm breiten Lamellen bieten eine warme, einladende Optik und geben den Wohnräumen eine behagliche Note. Ihr geradliniges Design macht sie zugleich ästhetisch und funktional. Jalousien aus edlem Lindenholz bringen eine elegante Atmosphäre in Ihr Zuhause. Die optische Wärme des Holzes passt perfekt zu klassischem Wohndesign, kann aber auch als Kontrast zu moderner und geradliniger Inneneinrichtung genutzt werden.");
 
            productRepository.saveAndFlush(product7);
-
-
-
-           RegisterRequestDTO requestDTO2 = new RegisterRequestDTO();
-           requestDTO2.setEmail("anon@mail.com");
-           requestDTO2.setFirstName("Besucher");
-           requestDTO2.setLastName("Besucher");
-           requestDTO2.setPassword("password1234Besucher..&&##");
-           requestDTO2.setRole(USER);
-           requestDTO2.setPhone("-");
-
-           System.out.println("Visitor token: " + service.register(requestDTO2).getAccessToken());
-
-
 
 
       */
