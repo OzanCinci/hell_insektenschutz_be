@@ -36,7 +36,6 @@ public class MainApplication {
       ReviewRepository reviewRepository,
       UserService userService) {
     return args -> {
-
       /*
            Product product = new Product();
            product.setName("Basic Plissee");
@@ -102,8 +101,6 @@ public class MainApplication {
            productRepository.saveAndFlush(product3);
 
 
-
-
            Product product4 = new Product();
            product4.setName("Doppel Rollo");
            product4.setCategory("Rollo");
@@ -111,7 +108,6 @@ public class MainApplication {
                    "Seit dreißig Jahren stehen Doppelrollos für Qualität und Innovation. Sie können zwischen Ketten- oder Akkumotorbedienung wählen, möglicherweise ergänzt durch eine Designkassette, die den aufgerollten Stoff stilvoll verdeckt. Duo-Rollo sind auf zwei parallel verlaufenden Stoffbahnen transparente und halbtransparente Streifen angeordnet, die flexibel einstellbar sind. So können Sie entweder volles Tageslicht genießen oder eine abdunkelnde Einstellung wählen. Wir bemühen uns, die Farben so realistisch wie möglich darzustellen, doch je nach Tageszeit und Lichteinfall können Stoffe unterschiedlich wirken. Um sicherzustellen, dass der Stoff Ihren Erwartungen entspricht, empfehlen wir, kostenlose Muster vorab zu bestellen.");
 
            productRepository.saveAndFlush(product4);
-
 
 
            Product product5 = new Product();
@@ -122,8 +118,6 @@ public class MainApplication {
 
            productRepository.saveAndFlush(product5);
 
-
-
            Product product6 = new Product();
            product6.setName("Wintergarten Plissee");
            product6.setCategory("Plissee");
@@ -132,15 +126,12 @@ public class MainApplication {
            productRepository.saveAndFlush(product6);
 
 
-
            Product product7 = new Product();
            product7.setName("Holzjalousie");
            product7.setCategory("Jalousie");
            product7.setDescription("Holzjalousien verleihen Wohnräumen eine besondere Atmosphäre. Dieser Sicht- und Sonnenschutz ist eine moderne Hommage an traditionelle Fensterläden. Gemütlich, stilvoll und individuell, sind Holzjalousien sowohl funktional als auch ästhetisch. Holzjalousien aus Echtholz mit 25-50 mm breiten Lamellen bieten eine warme, einladende Optik und geben den Wohnräumen eine behagliche Note. Ihr geradliniges Design macht sie zugleich ästhetisch und funktional. Jalousien aus edlem Lindenholz bringen eine elegante Atmosphäre in Ihr Zuhause. Die optische Wärme des Holzes passt perfekt zu klassischem Wohndesign, kann aber auch als Kontrast zu moderner und geradliniger Inneneinrichtung genutzt werden.");
 
            productRepository.saveAndFlush(product7);
-
-
       */
 
     };
