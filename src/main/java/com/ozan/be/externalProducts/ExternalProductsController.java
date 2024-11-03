@@ -3,6 +3,8 @@ package com.ozan.be.externalProducts;
 import com.ozan.be.common.BaseController;
 import com.ozan.be.externalProducts.dtos.KasondaPriceRequestDTO;
 import com.ozan.be.externalProducts.dtos.KasondaPriceResponseDTO;
+import com.ozan.be.externalProducts.dtos.extendedPrice.KasondaExtendedPriceRequestDTO;
+import com.ozan.be.externalProducts.services.ExternalProductsService;
 import com.ozan.be.kasondaApi.dtos.ColorOption;
 import com.ozan.be.kasondaApi.dtos.Product;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,13 @@ public class ExternalProductsController extends BaseController {
   public ResponseEntity<KasondaPriceResponseDTO> getPrice(
       @RequestBody KasondaPriceRequestDTO requestDTO) {
     KasondaPriceResponseDTO response = externalProductsService.getPrice(requestDTO);
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/price/extended")
+  public ResponseEntity<KasondaPriceResponseDTO> getPriceExtended(
+      @RequestBody KasondaExtendedPriceRequestDTO requestDTO) {
+    KasondaPriceResponseDTO response = externalProductsService.getPriceExtended(requestDTO);
     return ResponseEntity.ok(response);
   }
 

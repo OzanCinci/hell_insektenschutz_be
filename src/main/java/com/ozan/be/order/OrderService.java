@@ -5,6 +5,8 @@ import static com.ozan.be.order.domain.PaymentMethod.PAY_WITH_BANK_TRANSFER;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import com.ozan.be.aws.S3InvoicePdfsService;
+import com.ozan.be.aws.SqsMessagePublisher;
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.customException.types.DataNotFoundException;
 import com.ozan.be.mail.MailService;
@@ -15,6 +17,7 @@ import com.ozan.be.order.dto.CreateOrderItemResponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import com.ozan.be.order.dto.CreateOrderVisitorRequestDTO;
+import com.ozan.be.order.dto.OrderInvoiceDTO;
 import com.ozan.be.order.dto.OrderSingleItemRequestDTO;
 import com.ozan.be.order.dto.UpdateCargoInfoRequestDTO;
 import com.ozan.be.product.Product;
@@ -22,7 +25,7 @@ import com.ozan.be.product.ProductService;
 import com.ozan.be.transactions.TransactionRecord;
 import com.ozan.be.transactions.TransactionRecordService;
 import com.ozan.be.user.User;
-import com.ozan.be.user.UserService;
+import com.ozan.be.user.service.UserService;
 import com.ozan.be.utils.ModelMapperUtils;
 import com.ozan.be.utils.PageableUtils;
 import com.ozan.be.utils.UniqueCodeGenerator;
@@ -48,6 +51,8 @@ public class OrderService {
   private final ProductService productService;
   private final TransactionRecordService transactionRecordService;
   private final MailService mailService;
+  private final SqsMessagePublisher sqsMessagePublisher;
+  private final S3InvoicePdfsService s3InvoicePdfsService;
 
   public Page<CreateOrderResponseDTO> getAllOrders(Pageable pageable, Predicate filter) {
     Pageable finalPageable = PageableUtils.prepareAuditSorting(pageable);
@@ -70,6 +75,11 @@ public class OrderService {
   public void updateOrderStatus(
       UUID id, OrderStatus orderStatus, UpdateCargoInfoRequestDTO cargoInfoRequestDTO) {
     Order order = findOrderByIdThrowsException(id);
+
+    if (order.getOrderStatus().equals(OrderStatus.PENDING_PAYMENT)
+        && OrderStatus.ACTIVE.equals(orderStatus)) {
+      handleOrderStatusApproveAsyncEvents(order);
+    }
 
     // ask business decision before going live
     // validateOrderStatusChange(order.getOrderStatus(), orderStatus);
@@ -133,6 +143,7 @@ public class OrderService {
       order.getOrderItems().addAll(orderItems);
     }
     setUniqueTraceCode(order);
+    order.setIsInvoiceGenerated(false);
 
     Order savedOrder = orderRepository.saveAndFlush(order);
 
@@ -158,7 +169,36 @@ public class OrderService {
         ModelMapperUtils.mapAll(savedOrder.getOrderItems(), CreateOrderItemResponseDTO.class);
     responseDTO.setOrderItems(orderItemResponseDTOS);
 
+    handleOrderCreateAsyncEvents(savedOrder);
     return responseDTO;
+  }
+
+  public boolean isInvoiceAlreadyExists(String unprocessedTraceCode) {
+    String traceCode = unprocessedTraceCode.replace("-", "");
+    Order order = findOrderByTraceCodeThrowsException(traceCode);
+    return Boolean.TRUE.equals(order.getIsInvoiceGenerated());
+  }
+
+  private void handleOrderCreateAsyncEvents(Order savedOrder) {
+    if (CREDIT_CART.equals(savedOrder.getPaymentMethod())) {
+      OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO(savedOrder);
+      sqsMessagePublisher.sendMessageToSqs(
+          orderInvoiceDTO, "InvoiceGenerator", orderInvoiceDTO.getOrder().getOrderNumber());
+    }
+  }
+
+  private void handleOrderStatusApproveAsyncEvents(Order order) {
+    OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO(order);
+    sqsMessagePublisher.sendMessageToSqs(
+        orderInvoiceDTO, "InvoiceGenerator", orderInvoiceDTO.getOrder().getOrderNumber());
+  }
+
+  @Transactional
+  public void updateInvoiceStatusOfOrderByTraceCode(String unprocessedTraceCode) {
+    String traceCode = unprocessedTraceCode.replace("-", "");
+    Order order = findOrderByTraceCodeThrowsException(traceCode);
+    order.setIsInvoiceGenerated(true);
+    orderRepository.saveAndFlush(order);
   }
 
   private void setUniqueTraceCode(Order order) {
@@ -259,6 +299,7 @@ public class OrderService {
       order.getOrderItems().addAll(orderItems);
     }
     setUniqueTraceCode(order);
+    order.setIsInvoiceGenerated(false);
 
     Order savedOrder = orderRepository.saveAndFlush(order);
 
@@ -288,6 +329,24 @@ public class OrderService {
         ModelMapperUtils.mapAll(savedOrder.getOrderItems(), CreateOrderItemResponseDTO.class);
     responseDTO.setOrderItems(orderItemResponseDTOS);
 
+    handleOrderCreateAsyncEvents(savedOrder);
     return responseDTO;
+  }
+
+  private String beautifyTraceCode(String traceCode) {
+    return traceCode.replaceAll("(.{3})(.{3})(.{3})", "$1-$2-$3");
+  }
+
+  public void createInvoiceRequest(UUID id) {
+    Order order = findOrderByIdThrowsException(id);
+    String filePath = beautifyTraceCode(order.getTraceCode()) + ".pdf";
+    if (!s3InvoicePdfsService.doesObjectExist(filePath)) {
+      handleOrderCreateAsyncEvents(order);
+      return;
+    }
+
+    order.setIsInvoiceGenerated(true);
+    orderRepository.saveAndFlush(order);
+    // TODO: handle stuck between cases....
   }
 }

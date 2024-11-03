@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 
 import com.ozan.be.auth.dtos.AuthenticationRequestDTO;
 import com.ozan.be.auth.dtos.AuthenticationResponseDTO;
+import com.ozan.be.auth.dtos.ChangePasswordEmailRedirectionDTO;
 import com.ozan.be.auth.dtos.RefreshTokenRequestDTO;
 import com.ozan.be.auth.dtos.RegisterRequestDTO;
 import com.ozan.be.customException.types.BadRequestException;
@@ -15,7 +16,11 @@ import com.ozan.be.token.Token;
 import com.ozan.be.token.TokenRepository;
 import com.ozan.be.token.TokenType;
 import com.ozan.be.user.User;
-import com.ozan.be.user.UserRepository;
+import com.ozan.be.user.domain.PasswordResetAuthToken;
+import com.ozan.be.user.repository.PasswordResetAuthTokenRepository;
+import com.ozan.be.user.repository.UserRepository;
+import com.ozan.be.user.service.PasswordResetAuthTokenService;
+import com.ozan.be.user.service.UserService;
 import com.ozan.be.utils.ModelMapperUtils;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -34,6 +39,10 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final MailService mailService;
+  private final UserService userService;
+  private final PasswordResetAuthTokenService passwordResetAuthTokenService;
+  private final UserRepository userRepository;
+  private final PasswordResetAuthTokenRepository passwordResetAuthTokenRepository;
 
   private User findUserByEmail(String email) {
     return repository.findByEmail(email).orElse(null);
@@ -136,5 +145,53 @@ public class AuthenticationService {
     responseDTO.setAccessToken(accessToken);
     responseDTO.setRefreshToken(refreshToken);
     return responseDTO;
+  }
+
+  public boolean sendPasswordResetEmail(String email) {
+    User user = userService.getUserByMail(email);
+    String token = passwordResetAuthTokenService.generateOneTimeAuthEntry(user);
+    String baseURL = "https://www.hell-insekten-sonnenschutz.com/passwort-reset";
+    String url = baseURL + "?auth=" + token;
+    return mailService.sendPasswordResetEmail(email, url);
+  }
+
+  @Transactional
+  public boolean changePasswordViaEmailRedirection(
+      ChangePasswordEmailRedirectionDTO changePasswordEmailRedirectionDTO) {
+    PasswordResetAuthToken passwordResetAuthTokenByToken =
+        passwordResetAuthTokenService.findPasswordResetAuthTokenByToken(
+            changePasswordEmailRedirectionDTO.getToken());
+    validateChangePasswordViaEmailRedirection(
+        passwordResetAuthTokenByToken, changePasswordEmailRedirectionDTO);
+
+    User currentUser = passwordResetAuthTokenByToken.getUser();
+    currentUser.setPassword(
+        passwordEncoder.encode(changePasswordEmailRedirectionDTO.getNewPassword()));
+    passwordResetAuthTokenByToken.setUsed(true);
+
+    passwordResetAuthTokenRepository.save(passwordResetAuthTokenByToken);
+    userRepository.save(currentUser);
+    return true;
+  }
+
+  private void validateChangePasswordViaEmailRedirection(
+      PasswordResetAuthToken passwordResetAuthTokenByToken,
+      ChangePasswordEmailRedirectionDTO changePasswordEmailRedirectionDTO) {
+    if (!passwordResetAuthTokenByToken
+        .getUser()
+        .getEmail()
+        .equals(changePasswordEmailRedirectionDTO.getEmail())) {
+      // Token and selected e-mail address do not match.
+      throw new BadRequestException("Token und ausgewählte E-Mail-Adresse stimmen nicht überein.");
+    }
+    if (Boolean.TRUE.equals(passwordResetAuthTokenByToken.isUsed())) {
+      // Token is already used once before.
+      throw new BadRequestException("Token wurde bereits einmal verwendet.");
+    }
+    if (Instant.now().isAfter(passwordResetAuthTokenByToken.getValidUntil())) {
+      // Token is expired.
+      throw new BadRequestException(
+          "Token ist abgelaufen. Der an Ihre E-Mail-Adresse gesendete Link ist nach 15 Minuten ungültig.");
+    }
   }
 }

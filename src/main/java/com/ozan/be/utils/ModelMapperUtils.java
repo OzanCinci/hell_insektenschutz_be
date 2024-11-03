@@ -2,6 +2,8 @@ package com.ozan.be.utils;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,11 +20,14 @@ import org.modelmapper.convention.MatchingStrategies;
 @Slf4j
 public class ModelMapperUtils {
   private static final ModelMapper modelMapper;
+  private static final ObjectMapper objectMapper;
 
   static {
     modelMapper = new ModelMapper();
     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     modelMapper.getConfiguration().setSkipNullEnabled(true);
+
+    objectMapper = new ObjectMapper();
   }
 
   public static <D, T> D map(final T entity, Class<D> outClass) {
@@ -61,5 +66,35 @@ public class ModelMapperUtils {
       return new HashMap<>();
     }
     return list.stream().collect(Collectors.toMap(id, Function.identity()));
+  }
+
+  public static <T> String convertToJsonString(T object) {
+    try {
+      return objectMapper.writeValueAsString(object);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to convert object to JSON: {}", e.getMessage(), e);
+      return null;
+    }
+  }
+
+  public static <T> T readFromString(String jsonString, Class<T> clazz) {
+    try {
+      return objectMapper.readValue(jsonString, clazz);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to convert JSON string to object: {}", e.getMessage(), e);
+      return null;
+    }
+  }
+
+  public static <T> List<T> readFromStringToList(String stringifiedList, Class<T> clazz) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.readValue(
+          stringifiedList,
+          objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+    } catch (JsonProcessingException e) {
+      log.error("Failed to convert stringified List to List: {}", e.getMessage(), e);
+      return null;
+    }
   }
 }

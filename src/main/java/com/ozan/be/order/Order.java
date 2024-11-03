@@ -66,4 +66,6 @@ public class Order extends Auditable<UUID> implements Serializable {
 
   private Integer numberOfItems;
   private Boolean emailSent;
+
+  private Boolean isInvoiceGenerated = false;
 }

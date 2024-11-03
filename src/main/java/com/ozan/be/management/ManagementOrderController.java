@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,12 @@ public class ManagementOrderController extends BaseController {
       @PathVariable("status") OrderStatus status,
       @RequestBody UpdateCargoInfoRequestDTO requestDTO) {
     orderService.updateOrderStatus(id, status, requestDTO);
+    return ResponseEntity.ok(new BasicReponseDTO(true));
+  }
+
+  @PostMapping("/{id}/invoice")
+  public ResponseEntity<BasicReponseDTO> createInvoiceRequest(@PathVariable("id") UUID id) {
+    orderService.createInvoiceRequest(id);
     return ResponseEntity.ok(new BasicReponseDTO(true));
   }
 }

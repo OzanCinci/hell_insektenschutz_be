@@ -27,4 +27,5 @@ services:
     image: redis:latest
     restart: always
     ports:
-      - "6379:6379" # Map host port 6379 to container port 6379
+      - "6379:6379"
+    command: [ "redis-server", "--requirepass", "localdevpassword" ] # Add password

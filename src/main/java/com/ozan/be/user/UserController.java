@@ -3,6 +3,7 @@ package com.ozan.be.user;
 import com.ozan.be.common.dtos.BasicReponseDTO;
 import com.ozan.be.user.dtos.ChangePasswordRequestDTO;
 import com.ozan.be.user.dtos.UserResponseDTO;
+import com.ozan.be.user.service.UserService;
 import java.security.Principal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

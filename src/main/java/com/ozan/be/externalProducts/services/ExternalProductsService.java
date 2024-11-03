@@ -1,26 +1,29 @@
-package com.ozan.be.externalProducts;
+package com.ozan.be.externalProducts.services;
 
 import static java.util.Objects.isNull;
 
 import com.ozan.be.customException.types.BadRequestException;
+import com.ozan.be.customException.types.DataNotFoundException;
 import com.ozan.be.externalProducts.dtos.KasondaPriceRequestDTO;
 import com.ozan.be.externalProducts.dtos.KasondaPriceResponseDTO;
+import com.ozan.be.externalProducts.dtos.extendedPrice.BaseExtendedPriceDTO;
+import com.ozan.be.externalProducts.dtos.extendedPrice.KasondaExtendedPriceRequestDTO;
+import com.ozan.be.externalProducts.services.extendedPrice.IExtendedPriceBuilder;
 import com.ozan.be.kasondaApi.KasondaApiService;
 import com.ozan.be.kasondaApi.dtos.ColorOption;
 import com.ozan.be.kasondaApi.dtos.Product;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ExternalProductsService {
   private final RedisService redisService;
   private final KasondaApiService kasondaApiService;
-
-  public ExternalProductsService(RedisService redisService, KasondaApiService kasondaApiService) {
-    this.redisService = redisService;
-    this.kasondaApiService = kasondaApiService;
-  }
+  private final List<? extends IExtendedPriceBuilder> extendedPriceBuilders;
 
   private boolean keyExists(String key) {
     return redisService.keyExists(key);
@@ -57,18 +60,6 @@ public class ExternalProductsService {
     return product;
   }
 
-  public KasondaPriceResponseDTO getPrice(KasondaPriceRequestDTO requestDTO) {
-    String key = requestDTO.toString();
-    if (keyExists(key)) {
-      return (KasondaPriceResponseDTO) getObject(key);
-    }
-
-    KasondaPriceResponseDTO price = kasondaApiService.getPrice(requestDTO);
-    long TTL = calculateTTLByMinute(30);
-    cachePrice(key, price, TTL);
-    return price;
-  }
-
   public ColorOption getColorOptionByCategoryAndId(String category, String id) {
     String key = category + "/" + id;
     if (keyExists(key)) {
@@ -93,5 +84,48 @@ public class ExternalProductsService {
     cacheColorOption(key, colorOption, TTL);
 
     return colorOption;
+  }
+
+  public KasondaPriceResponseDTO getPrice(KasondaPriceRequestDTO requestDTO) {
+    String key = requestDTO.toString();
+    if (keyExists(key)) {
+      return (KasondaPriceResponseDTO) getObject(key);
+    }
+
+    KasondaPriceResponseDTO price = kasondaApiService.getPrice(requestDTO);
+    long TTL = calculateTTLByMinute(30);
+    cachePrice(key, price, TTL);
+    return price;
+  }
+
+  public KasondaPriceResponseDTO getPriceExtended(KasondaExtendedPriceRequestDTO requestDTO) {
+    IExtendedPriceBuilder extendedPriceBuilder = provideExtendedPriceBuilder(requestDTO);
+    BaseExtendedPriceDTO extendedPriceDTO = extendedPriceBuilder.build(requestDTO);
+    String key = extendedPriceDTO.toString();
+
+    if (keyExists(key)) {
+      return (KasondaPriceResponseDTO) getObject(key);
+    }
+
+    KasondaPriceResponseDTO price = kasondaApiService.getExtendedPrice(extendedPriceDTO);
+    long TTL = calculateTTLByMinute(30);
+    cachePrice(key, price, TTL);
+    return price;
+  }
+
+  private IExtendedPriceBuilder provideExtendedPriceBuilder(
+      KasondaExtendedPriceRequestDTO requestDTO) {
+    return extendedPriceBuilders.stream()
+        .filter(
+            extendedPriceBuilders ->
+                extendedPriceBuilders
+                    .getBuildType()
+                    .equals(requestDTO.getKasondaExtendedPriceBuildType()))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new DataNotFoundException(
+                    "Failed to find builder class with type: "
+                        + requestDTO.getKasondaExtendedPriceBuildType()));
   }
 }

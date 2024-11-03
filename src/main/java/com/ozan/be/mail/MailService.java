@@ -33,10 +33,22 @@ public class MailService {
   private String senderEmail;
 
   @Autowired private JavaMailSender mailSender;
-
   @Autowired private TemplateEngine templateEngine;
-
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private static final String OWNER_MAIL_ADDRESS = "Info@hell-insektenschutz.de";
+
+  public boolean sendPasswordResetEmail(String email, String url) {
+    try {
+      String subject = "Passwort zurücksetzen";
+      Context context = new Context();
+      context.setVariable("resetLink", url);
+      String htmlContent = templateEngine.process("reset_password", context);
+      sendMail(email, subject, htmlContent);
+      return true;
+    } catch (Exception e) {
+      throw new BadRequestException("Failed to send password reset email.");
+    }
+  }
 
   public void sendHtmlEmail(User to, MailType mailType, Order order) {
     switch (mailType) {
@@ -117,6 +129,7 @@ public class MailService {
     }
 
     sendMail(to.getEmail(), subject, htmlContent);
+    informAdmin(order);
   }
 
   private void handleRegisterMail(User to) {
@@ -141,5 +154,55 @@ public class MailService {
     } catch (MessagingException | MailException e) {
       throw new BadRequestException("Failed During mail service.");
     }
+  }
+
+  public void informAdmin(Order order) {
+    try {
+      String subject = "Neue Bestellung - Hell Insek";
+      DecimalFormat decimalFormat = new DecimalFormat("0.00€");
+      String totalPrice =
+          decimalFormat.format(
+              order.getPrice() != null ? order.getPrice() + order.getShippingPrice() : 0);
+
+      String message =
+          String.format(
+              "Bitte überprüfen Sie das Admin-Panel, Sie haben eine neue Bestellung, die auf Sie wartet. Der Gesamtbetrag der Bestellung beträgt %s.",
+              totalPrice);
+
+      sendTextMail(OWNER_MAIL_ADDRESS, subject, message);
+    } catch (Exception e) {
+      // TODO: make this async later...
+    }
+  }
+
+  // Simple mail sending function for admin notification
+  private void sendTextMail(String to, String subject, String textBody) {
+    try {
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+      helper.setFrom(senderEmail);
+      helper.setTo(to);
+      helper.setSubject(subject);
+      helper.setText(textBody, false); // false means this is plain text
+
+      mailSender.send(message);
+    } catch (MessagingException | MailException e) {
+      throw new BadRequestException("Failed to send admin notification email.");
+    }
+  }
+
+  public void sendInvoiceEmail(String orderNumber, String customerEmail) {
+    String subject = "Rechnung für Ihre Bestellung: " + orderNumber;
+    String invoiceLink =
+        "https://hell-insekten-sonnenschutz-invoices-pdf.s3.eu-central-1.amazonaws.com/"
+            + orderNumber
+            + ".pdf";
+    Context context = new Context();
+    context.setVariable("orderNumber", orderNumber);
+    context.setVariable("invoiceLink", invoiceLink);
+
+    String htmlContent = templateEngine.process("invoice_sender", context);
+    sendMail(customerEmail, subject, htmlContent);
   }
 }

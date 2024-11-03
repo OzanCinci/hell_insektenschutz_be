@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danke für Ihren Einkauf - Bestellung: <span th:text="${orderNumber}">Bestellnummer</span></title>
+    <style>
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #f59f4c;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            background-color: #f59f4c;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        a {
+            color: #f59f4c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h3>Danke für Ihren Einkauf - Bestellung: <span th:text="${orderNumber}">Bestellnummer</span></h3>
+    </div>
+    <div class="content">
+        <h2>Hallo!</h2>
+        <p>Vielen Dank für Ihren Einkauf bei Hell Insekten & Sonnenschutz. Ihre Bestellung hat die Nummer <strong th:text="${orderNumber}">Bestellnummer</strong>.</p>
+        <p>Sie können Ihre Rechnung im PDF-Format herunterladen, indem Sie auf den folgenden Link klicken:</p>
+        <p>
+            <a th:href="${invoiceLink}" target="_blank">Rechnung herunterladen</a>
+        </p>
+        <p>Bewahren Sie die Rechnung sicher auf. Sollten Sie Fragen haben, zögern Sie nicht, uns zu kontaktieren.</p>
+        <br/>
+        <p>Mit freundlichen Grüßen</p>
+        <br/>
+        <div>
+            <img
+                    alt="Firmenlogo"
+                    src="https://hell-insek-pdfs.s3.amazonaws.com/logo.webp"
+                    width="250"
+                    height="auto"
+            />
+        </div>
+        <div>
+            <div>Lochfeldstraße 30,</div>
+            <div>76437 Rastatt, Deutschland</div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Hell Insekten & Sonnenschutz. Alle Rechte vorbehalten.</p>
+    </div>
+</div>
+</body>
+</html>

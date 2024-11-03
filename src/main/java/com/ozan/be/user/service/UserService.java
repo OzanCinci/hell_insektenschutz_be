@@ -1,9 +1,11 @@
-package com.ozan.be.user;
+package com.ozan.be.user.service;
 
 import com.ozan.be.customException.types.DataNotFoundException;
+import com.ozan.be.user.User;
 import com.ozan.be.user.domain.Role;
 import com.ozan.be.user.dtos.ChangePasswordRequestDTO;
 import com.ozan.be.user.dtos.UserResponseDTO;
+import com.ozan.be.user.repository.UserRepository;
 import com.ozan.be.utils.ModelMapperUtils;
 import com.ozan.be.utils.PageableUtils;
 import com.querydsl.core.types.Predicate;

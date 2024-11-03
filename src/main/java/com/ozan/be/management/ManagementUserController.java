@@ -2,10 +2,10 @@ package com.ozan.be.management;
 
 import com.ozan.be.common.BaseController;
 import com.ozan.be.common.dtos.BasicReponseDTO;
-import com.ozan.be.user.UserService;
 import com.ozan.be.user.domain.Role;
 import com.ozan.be.user.domain.UserSearchFilter;
 import com.ozan.be.user.dtos.UserResponseDTO;
+import com.ozan.be.user.service.UserService;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;

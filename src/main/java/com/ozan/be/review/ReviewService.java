@@ -8,7 +8,7 @@ import com.ozan.be.review.dtos.ReviewRequestDTO;
 import com.ozan.be.review.dtos.ReviewResponseDTO;
 import com.ozan.be.review.dtos.ReviewSummaryDTO;
 import com.ozan.be.user.User;
-import com.ozan.be.user.UserService;
+import com.ozan.be.user.service.UserService;
 import com.ozan.be.utils.ModelMapperUtils;
 import com.ozan.be.utils.PageableUtils;
 import com.querydsl.core.types.Predicate;

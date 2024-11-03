@@ -59,7 +59,12 @@ public class SecurityConfiguration {
 
   private void publicRequests(HttpSecurity http) throws Exception {
     String[] WHITE_LIST_URL = {
-      "/api/auth/**", "/api/product/*", "/api/product/**", "/api/transactions"
+      "/api/auth/**",
+      "/api/product/*",
+      "/api/product/**",
+      "/api/transactions",
+      "/api/healthcheck",
+      "/api/healthcheck/**"
     };
 
     http.authorizeHttpRequests((requests) -> requests.requestMatchers(WHITE_LIST_URL).permitAll());
@@ -84,6 +89,8 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/api/management/**")
                 .hasAnyRole(managementRoles)
                 .requestMatchers(HttpMethod.PUT, "/api/management/**")
+                .hasAnyRole(managementRoles)
+                .requestMatchers(HttpMethod.POST, "/api/management/**")
                 .hasAnyRole(managementRoles)
                 .requestMatchers(HttpMethod.DELETE, "/api/management/**")
                 .hasAnyRole(managementRoles));

@@ -28,5 +28,6 @@ public class CreateOrderResponseDTO implements Serializable {
   private Integer numberOfItems;
   private Instant createdAt;
   private Instant updatedAt;
+  private Boolean isInvoiceGenerated;
   private List<CreateOrderItemResponseDTO> orderItems;
 }

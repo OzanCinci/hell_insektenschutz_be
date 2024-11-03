@@ -2,7 +2,7 @@ package com.ozan.be.config;
 
 import com.ozan.be.auditing.ApplicationAuditAware;
 import com.ozan.be.customException.types.DataNotFoundException;
-import com.ozan.be.user.UserRepository;
+import com.ozan.be.user.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
