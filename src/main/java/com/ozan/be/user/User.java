@@ -1,6 +1,6 @@
 package com.ozan.be.user;
 
-import com.ozan.be.order.Order;
+import com.ozan.be.order.domain.entity.Order;
 import com.ozan.be.review.Review;
 import com.ozan.be.token.Token;
 import com.ozan.be.user.domain.Role;

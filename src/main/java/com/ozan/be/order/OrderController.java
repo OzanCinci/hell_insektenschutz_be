@@ -4,6 +4,7 @@ import com.ozan.be.common.BaseController;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import com.ozan.be.order.dto.CreateOrderVisitorRequestDTO;
+import com.ozan.be.order.service.OrderService;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

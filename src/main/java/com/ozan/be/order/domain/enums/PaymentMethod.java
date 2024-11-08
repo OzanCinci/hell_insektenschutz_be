@@ -1,4 +1,4 @@
-package com.ozan.be.order.domain;
+package com.ozan.be.order.domain.enums;
 
 public enum PaymentMethod {
   CREDIT_CART,

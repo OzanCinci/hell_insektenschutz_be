@@ -1,4 +1,4 @@
-package com.ozan.be.order.domain;
+package com.ozan.be.order.domain.enums;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -1,7 +1,7 @@
 package com.ozan.be.order.dto;
 
-import com.ozan.be.order.domain.OrderStatus;
-import com.ozan.be.order.domain.PaymentMethod;
+import com.ozan.be.order.domain.enums.OrderStatus;
+import com.ozan.be.order.domain.enums.PaymentMethod;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;

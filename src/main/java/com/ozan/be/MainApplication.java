@@ -1,7 +1,8 @@
 package com.ozan.be;
 
-import com.ozan.be.order.*;
+import com.ozan.be.management.repository.DiscountRepository;
 import com.ozan.be.product.ProductRepository;
+import com.ozan.be.user.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +18,10 @@ public class MainApplication {
   }
 
   @Bean
-  public CommandLineRunner commandLineRunner(ProductRepository productRepository) {
+  public CommandLineRunner commandLineRunner(
+      ProductRepository productRepository,
+      UserService userService,
+      DiscountRepository discountRepository) {
     return args -> {
       /*
       Product product = new Product();
@@ -166,6 +170,58 @@ public class MainApplication {
 
        */
 
+      /*
+      User user2 = userService.getUserByMail("mkinsektenschutz@outlook.de");
+      User user3 = userService.getUserByMail("insektenschutz.k@gmail.com");
+      User user6 = userService.getUserByMail("info@sliakas-wohndesign.de");
+
+
+      Discount discount = new Discount();
+      discount.setPercentage(0.4);
+      discount.setDiscountType(DiscountType.DEALER);
+      discount.setDiscountProductType(NOT_A_PRODUCT);
+      discount.setValidUntil(null);
+      discount.setActive(true);
+
+
+      discount.setUser(user2);
+      discountRepository.saveAndFlush(discount);
+
+
+      Discount discount2 = new Discount();
+      discount2.setPercentage(0.4);
+      discount2.setDiscountType(DiscountType.DEALER);
+      discount2.setDiscountProductType(NOT_A_PRODUCT);
+      discount2.setValidUntil(null);
+      discount2.setActive(true);
+      discount2.setUser(user3);
+      discountRepository.saveAndFlush(discount2);
+
+
+      Discount discount3 = new Discount();
+      discount3.setPercentage(0.4);
+      discount3.setDiscountType(DiscountType.DEALER);
+      discount3.setDiscountProductType(NOT_A_PRODUCT);
+      discount3.setValidUntil(null);
+      discount3.setActive(true);
+      discount3.setUser(user6);
+      discountRepository.saveAndFlush(discount3);
+
+       */
+
+      /*
+      Instant firstOfDecember = LocalDate.of(2024, 12, 1)  // Set the date to December 1, 2024
+              .atStartOfDay(ZoneOffset.UTC) // Start of day at UTC
+              .toInstant();
+
+      Discount discount = new Discount();
+      discount.setPercentage(0.2);
+      discount.setDiscountType(DiscountType.PUBLIC);
+      discount.setDiscountProductType(DiscountProductType.NOT_A_PRODUCT);
+      discount.setValidUntil(firstOfDecember);
+      discount.setActive(true);
+      discountRepository.saveAndFlush(discount);
+       */
     };
   }
 }

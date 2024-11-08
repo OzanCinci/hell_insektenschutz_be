@@ -1,7 +1,7 @@
 package com.ozan.be.review;
 
 import com.ozan.be.common.BaseController;
-import com.ozan.be.common.dtos.BasicCreateResponseDTO;
+import com.ozan.be.common.dtos.basic.BasicCreateResponseDTO;
 import com.ozan.be.review.domain.ReviewSearchFilter;
 import com.ozan.be.review.dtos.ReviewRequestDTO;
 import com.ozan.be.review.dtos.ReviewSummaryDTO;

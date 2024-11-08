@@ -47,7 +47,8 @@ target/
 
 ### not neccessary for now // TODO: clear repo
 http
-
+application.yml
+application-local.yml
 
 ### NetBeans ###
 /nbproject/private/

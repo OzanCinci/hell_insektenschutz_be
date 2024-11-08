@@ -68,6 +68,16 @@ public class ModelMapperUtils {
     return list.stream().collect(Collectors.toMap(id, Function.identity()));
   }
 
+  public static <T, K> Map<K, T> convertListToArbitraryMap(
+      List<T> list, Function<T, K> identifier) {
+    if (isNull(list) || list.isEmpty()) {
+      return new HashMap<>();
+    }
+    return list.stream()
+        .collect(
+            Collectors.toMap(identifier, Function.identity(), (existing, replacement) -> existing));
+  }
+
   public static <T> String convertToJsonString(T object) {
     try {
       return objectMapper.writeValueAsString(object);

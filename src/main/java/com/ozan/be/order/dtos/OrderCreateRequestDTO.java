@@ -1,7 +1,7 @@
 package com.ozan.be.order.dtos;
 
-import com.ozan.be.order.domain.OrderStatus;
-import com.ozan.be.order.domain.PaymentMethod;
+import com.ozan.be.order.domain.enums.OrderStatus;
+import com.ozan.be.order.domain.enums.PaymentMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;

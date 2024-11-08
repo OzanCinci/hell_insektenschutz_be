@@ -25,10 +25,10 @@ public class HealthCheckController extends BaseController {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class VersionDTO implements Serializable {
-    @Builder.Default private Integer VERSION_ID = 4;
+    @Builder.Default private Integer VERSION_ID = 5;
     @Builder.Default private Instant now = Instant.now();
     @Builder.Default private CacheStatus cacheStatus = CacheStatus.UNKNOWN;
-    @Builder.Default private String description = "";
+    @Builder.Default private String description = "-";
   }
 
   public enum CacheStatus {

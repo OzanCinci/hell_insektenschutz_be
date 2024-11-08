@@ -1,4 +1,4 @@
-package com.ozan.be.common.dtos;
+package com.ozan.be.common.dtos.basic;
 
 import java.io.Serializable;
 import java.util.UUID;

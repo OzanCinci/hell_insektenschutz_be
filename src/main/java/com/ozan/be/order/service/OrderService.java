@@ -1,7 +1,7 @@
-package com.ozan.be.order;
+package com.ozan.be.order.service;
 
-import static com.ozan.be.order.domain.PaymentMethod.CREDIT_CART;
-import static com.ozan.be.order.domain.PaymentMethod.PAY_WITH_BANK_TRANSFER;
+import static com.ozan.be.order.domain.enums.PaymentMethod.CREDIT_CART;
+import static com.ozan.be.order.domain.enums.PaymentMethod.PAY_WITH_BANK_TRANSFER;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -11,8 +11,11 @@ import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.customException.types.DataNotFoundException;
 import com.ozan.be.mail.MailService;
 import com.ozan.be.mail.domain.MailType;
-import com.ozan.be.order.domain.OrderStatus;
-import com.ozan.be.order.domain.PaymentMethod;
+import com.ozan.be.order.domain.entity.Order;
+import com.ozan.be.order.domain.entity.OrderItem;
+import com.ozan.be.order.domain.entity.QOrder;
+import com.ozan.be.order.domain.enums.OrderStatus;
+import com.ozan.be.order.domain.enums.PaymentMethod;
 import com.ozan.be.order.dto.CreateOrderItemResponseDTO;
 import com.ozan.be.order.dto.CreateOrderRequestDTO;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
@@ -20,6 +23,7 @@ import com.ozan.be.order.dto.CreateOrderVisitorRequestDTO;
 import com.ozan.be.order.dto.OrderInvoiceDTO;
 import com.ozan.be.order.dto.OrderSingleItemRequestDTO;
 import com.ozan.be.order.dto.UpdateCargoInfoRequestDTO;
+import com.ozan.be.order.repository.OrderRepository;
 import com.ozan.be.product.Product;
 import com.ozan.be.product.ProductService;
 import com.ozan.be.transactions.TransactionRecord;

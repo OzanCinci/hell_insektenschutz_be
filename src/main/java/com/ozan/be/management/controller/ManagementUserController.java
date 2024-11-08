@@ -1,7 +1,7 @@
-package com.ozan.be.management;
+package com.ozan.be.management.controller;
 
 import com.ozan.be.common.BaseController;
-import com.ozan.be.common.dtos.BasicReponseDTO;
+import com.ozan.be.common.dtos.basic.BasicReponseDTO;
 import com.ozan.be.user.domain.Role;
 import com.ozan.be.user.domain.UserSearchFilter;
 import com.ozan.be.user.dtos.UserResponseDTO;

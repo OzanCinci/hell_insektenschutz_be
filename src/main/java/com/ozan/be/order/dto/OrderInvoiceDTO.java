@@ -2,8 +2,8 @@ package com.ozan.be.order.dto;
 
 import static java.util.Objects.isNull;
 
-import com.ozan.be.order.Order;
-import com.ozan.be.order.OrderItem;
+import com.ozan.be.order.domain.entity.Order;
+import com.ozan.be.order.domain.entity.OrderItem;
 import com.ozan.be.utils.ModelMapperUtils;
 import java.io.Serializable;
 import java.util.List;

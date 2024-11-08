@@ -1,4 +1,4 @@
-package com.ozan.be.management;
+package com.ozan.be.management.controller;
 
 import com.ozan.be.transactions.TransactionRecordService;
 import com.ozan.be.transactions.dtos.TransactionResponseDTO;

@@ -1,6 +1,6 @@
 package com.ozan.be.user;
 
-import com.ozan.be.common.dtos.BasicReponseDTO;
+import com.ozan.be.common.dtos.basic.BasicReponseDTO;
 import com.ozan.be.user.dtos.ChangePasswordRequestDTO;
 import com.ozan.be.user.dtos.UserResponseDTO;
 import com.ozan.be.user.service.UserService;

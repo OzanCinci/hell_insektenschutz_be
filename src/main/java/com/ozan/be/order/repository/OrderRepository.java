@@ -1,5 +1,6 @@
-package com.ozan.be.order;
+package com.ozan.be.order.repository;
 
+import com.ozan.be.order.domain.entity.Order;
 import com.querydsl.core.types.Predicate;
 import java.util.Optional;
 import java.util.UUID;

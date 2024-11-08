@@ -1,6 +1,6 @@
 package com.ozan.be.order.dto;
 
-import com.ozan.be.order.domain.OrderStatus;
+import com.ozan.be.order.domain.enums.OrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;

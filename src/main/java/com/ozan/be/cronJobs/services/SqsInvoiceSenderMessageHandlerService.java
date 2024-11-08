@@ -1,7 +1,7 @@
 package com.ozan.be.cronJobs.services;
 
 import com.ozan.be.mail.MailService;
-import com.ozan.be.order.OrderService;
+import com.ozan.be.order.service.OrderService;
 import com.ozan.be.utils.ModelMapperUtils;
 import java.util.List;
 import java.util.function.Consumer;

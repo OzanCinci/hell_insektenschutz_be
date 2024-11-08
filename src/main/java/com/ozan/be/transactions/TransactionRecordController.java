@@ -1,7 +1,7 @@
 package com.ozan.be.transactions;
 
 import com.ozan.be.common.BaseController;
-import com.ozan.be.common.dtos.BasicCreateResponseDTO;
+import com.ozan.be.common.dtos.basic.BasicCreateResponseDTO;
 import com.ozan.be.transactions.domain.TransactionRecordRequestDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;

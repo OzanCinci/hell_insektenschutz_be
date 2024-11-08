@@ -1,6 +1,6 @@
 package com.ozan.be.common;
 
-import com.ozan.be.common.dtos.UserDTO;
+import com.ozan.be.common.dtos.basic.UserDTO;
 import com.ozan.be.utils.ModelMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;

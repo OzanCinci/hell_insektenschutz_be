@@ -1,4 +1,4 @@
-package com.ozan.be.common.dtos;
+package com.ozan.be.common.dtos.basic;
 
 import com.ozan.be.user.domain.Role;
 import java.time.Instant;

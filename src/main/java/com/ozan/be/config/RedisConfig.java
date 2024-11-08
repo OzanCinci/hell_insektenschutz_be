@@ -12,7 +12,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-
   // TODO: make it independent of the yml file!
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
@@ -28,7 +27,6 @@ public class RedisConfig {
   }
 
   /*
-
   @Bean
   public LettuceConnectionFactory redisConnectionFactory() {
     RedisStandaloneConfiguration config = new RedisStandaloneConfiguration("localhost", 6379);
@@ -36,7 +34,7 @@ public class RedisConfig {
     return new LettuceConnectionFactory(config);
   }
 
-    */
+   */
 
   @Bean
   public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {

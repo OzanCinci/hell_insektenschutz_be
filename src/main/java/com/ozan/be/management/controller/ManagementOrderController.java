@@ -1,12 +1,12 @@
-package com.ozan.be.management;
+package com.ozan.be.management.controller;
 
 import com.ozan.be.common.BaseController;
-import com.ozan.be.common.dtos.BasicReponseDTO;
-import com.ozan.be.order.OrderService;
+import com.ozan.be.common.dtos.basic.BasicReponseDTO;
 import com.ozan.be.order.domain.OrderSearchFilter;
-import com.ozan.be.order.domain.OrderStatus;
+import com.ozan.be.order.domain.enums.OrderStatus;
 import com.ozan.be.order.dto.CreateOrderResponseDTO;
 import com.ozan.be.order.dto.UpdateCargoInfoRequestDTO;
+import com.ozan.be.order.service.OrderService;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;

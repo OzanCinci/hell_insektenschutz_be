@@ -1,4 +1,4 @@
-package com.ozan.be.order;
+package com.ozan.be.order.domain.entity;
 
 import com.ozan.be.common.Auditable;
 import com.ozan.be.product.Product;

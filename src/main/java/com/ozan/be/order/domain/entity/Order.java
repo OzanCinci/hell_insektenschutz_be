@@ -1,8 +1,8 @@
-package com.ozan.be.order;
+package com.ozan.be.order.domain.entity;
 
 import com.ozan.be.common.Auditable;
-import com.ozan.be.order.domain.OrderStatus;
-import com.ozan.be.order.domain.PaymentMethod;
+import com.ozan.be.order.domain.enums.OrderStatus;
+import com.ozan.be.order.domain.enums.PaymentMethod;
 import com.ozan.be.user.User;
 import jakarta.persistence.*;
 import java.io.Serializable;
