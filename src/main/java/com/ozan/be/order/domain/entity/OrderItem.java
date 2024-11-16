@@ -1,7 +1,7 @@
 package com.ozan.be.order.domain.entity;
 
 import com.ozan.be.common.Auditable;
-import com.ozan.be.product.Product;
+import com.ozan.be.product.domain.Product;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;

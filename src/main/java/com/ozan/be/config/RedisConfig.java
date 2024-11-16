@@ -40,9 +40,8 @@ public class RedisConfig {
   public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
     RedisTemplate<String, Object> template = new RedisTemplate<>();
     template.setConnectionFactory(connectionFactory);
-    template.setKeySerializer(new StringRedisSerializer()); // Keys are serialized as Strings.
-    template.setValueSerializer(
-        new GenericJackson2JsonRedisSerializer()); // Values are serialized as JSON.
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
     return template;
   }
 }

@@ -1,5 +1,6 @@
-package com.ozan.be.product;
+package com.ozan.be.product.repository;
 
+import com.ozan.be.product.domain.Product;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

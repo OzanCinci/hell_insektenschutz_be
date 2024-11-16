@@ -1,6 +1,6 @@
 package com.ozan.be.review.dtos;
 
-import com.ozan.be.product.Product;
+import com.ozan.be.product.domain.Product;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Data;

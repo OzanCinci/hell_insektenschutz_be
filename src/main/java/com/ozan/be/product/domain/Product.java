@@ -1,4 +1,4 @@
-package com.ozan.be.product;
+package com.ozan.be.product.domain;
 
 import com.ozan.be.common.Auditable;
 import jakarta.persistence.*;

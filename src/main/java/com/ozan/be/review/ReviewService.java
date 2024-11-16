@@ -2,8 +2,8 @@ package com.ozan.be.review;
 
 import com.ozan.be.customException.types.BadRequestException;
 import com.ozan.be.customException.types.DataNotFoundException;
-import com.ozan.be.product.Product;
-import com.ozan.be.product.ProductService;
+import com.ozan.be.product.domain.Product;
+import com.ozan.be.product.service.ProductService;
 import com.ozan.be.review.dtos.ReviewRequestDTO;
 import com.ozan.be.review.dtos.ReviewResponseDTO;
 import com.ozan.be.review.dtos.ReviewSummaryDTO;

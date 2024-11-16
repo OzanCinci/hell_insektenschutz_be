@@ -1,7 +1,8 @@
 package com.ozan.be;
 
 import com.ozan.be.management.repository.DiscountRepository;
-import com.ozan.be.product.ProductRepository;
+import com.ozan.be.product.repository.ProductRepository;
+import com.ozan.be.product.service.PredefinedWindowsService;
 import com.ozan.be.user.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,8 +22,10 @@ public class MainApplication {
   public CommandLineRunner commandLineRunner(
       ProductRepository productRepository,
       UserService userService,
-      DiscountRepository discountRepository) {
+      DiscountRepository discountRepository,
+      PredefinedWindowsService predefinedWindowsService) {
     return args -> {
+      // predefinedWindowsService.readFromCsvAndFillDB();
       /*
       Product product = new Product();
       product.setName("Basic Plissee");

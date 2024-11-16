@@ -1,6 +1,8 @@
-package com.ozan.be.product;
+package com.ozan.be.product.controller;
 
 import com.ozan.be.common.BaseController;
+import com.ozan.be.product.domain.Product;
+import com.ozan.be.product.service.ProductService;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

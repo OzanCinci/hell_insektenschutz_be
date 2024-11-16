@@ -1,7 +1,7 @@
 package com.ozan.be.review;
 
 import com.ozan.be.common.Auditable;
-import com.ozan.be.product.Product;
+import com.ozan.be.product.domain.Product;
 import com.ozan.be.user.User;
 import jakarta.persistence.*;
 import java.io.Serializable;

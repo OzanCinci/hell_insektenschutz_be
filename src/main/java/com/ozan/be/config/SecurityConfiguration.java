@@ -65,7 +65,8 @@ public class SecurityConfiguration {
       "/api/transactions",
       "/api/healthcheck",
       "/api/healthcheck/**",
-      "/api/common/**"
+      "/api/common/**",
+      "/api/predefined-windows/**"
     };
 
     http.authorizeHttpRequests((requests) -> requests.requestMatchers(WHITE_LIST_URL).permitAll());

@@ -1,6 +1,6 @@
 package com.ozan.be.order.dtos;
 
-import com.ozan.be.product.Product;
+import com.ozan.be.product.domain.Product;
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.Data;

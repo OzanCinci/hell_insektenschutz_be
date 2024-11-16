@@ -1,6 +1,8 @@
-package com.ozan.be.product;
+package com.ozan.be.product.service;
 
 import com.ozan.be.customException.types.DataNotFoundException;
+import com.ozan.be.product.domain.Product;
+import com.ozan.be.product.repository.ProductRepository;
 import com.ozan.be.utils.ModelMapperUtils;
 import java.util.List;
 import java.util.Map;
